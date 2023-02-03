@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState } from "react";
+import { ProgressBar } from "react-bootstrap";
 import Carousel from "react-bootstrap/Carousel";
 import Formulaire1 from "./components/Formulaire1";
 import Formulaire2 from "./components/Formulaire2";
@@ -96,6 +97,7 @@ function UncontrolledExample() {
           >
             <Carousel
               as={"ul"}
+              className="p-0"
               controls={false}
               interval={null}
               activeIndex={indexCarousel}
@@ -109,10 +111,9 @@ function UncontrolledExample() {
               ))}
             </Carousel>
           </div>
-          <div className="my-carousel-progress ">
-            <div
-              className="my-carousel-progress-bar"
-              style={{ width: "20%" }}
+          <div className="m-0">
+            <ProgressBar
+              now={((indexCarousel + 1) * 100) / formulaireList.length}
             />
           </div>
         </section>
