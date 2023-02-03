@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import HomeCarousel from "./components/HomeCarousel";
 import HomeHeader from "./components/HomeHeader";
 import HomeSlide from "./components/HomeSlide";
 import MenuNav from "./MenuNav";
@@ -9,7 +10,7 @@ import MenuNav from "./MenuNav";
 export default function AppHome() {
   return (
     <>
-      <HomeSlide />
+      <HomeCarousel />
       <HomeHeader />
     </>
   );

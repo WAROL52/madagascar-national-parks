@@ -1,6 +1,6 @@
 "use client";
 import "./globals.css";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Bootstrap from "./Bootstrap";
 export default function RootLayout({
   children,
