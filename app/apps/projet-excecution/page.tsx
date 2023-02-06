@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import * as React from "react";
@@ -44,6 +43,14 @@ const renderRisque: GridColDef["renderCell"] = ({ value }) => {
   }
   return <div className={` text-bg-${defaultOption.color} p-3`}> {value} </div>;
 };
+const etapes = [
+  "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
+  "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
+  "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
+  "IMPACTS, PGES, RISQUES, MGP ",
+  "RESTITUTION AUX COMMUNAUTES",
+  "EVALUATION PARTICIPATIVE ",
+];
 const renderProgression: GridColDef["renderCell"] = ({ value }) => {
   return (
     <div
@@ -61,11 +68,11 @@ const renderProgression: GridColDef["renderCell"] = ({ value }) => {
     </div>
   );
 };
-const rows: GridRowsProp = Array.from({ length: 15 }).map((_, index) => {
+const rows: GridRowsProp = etapes.map((etape, index) => {
   return {
     id: index,
     site: "ABT",
-    etape: "etape" + index,
+    etape,
     email: index + "raberolio@gmail.com",
     risqueProjet: "En bonne voie",
     risqueTache: "En bonne voie",
@@ -87,7 +94,7 @@ const columns: GridColDef[] = [
     headerName: "Site",
     headerClassName,
   },
-  { field: "etape", headerName: "Etape", headerClassName },
+  { field: "etape", headerName: "Etape", headerClassName, width: 300 },
   {
     field: "risqueProjet",
     headerName: "Risque-projet",
@@ -123,9 +130,9 @@ const columns: GridColDef[] = [
     headerName: "Debut Previonnel",
     headerClassName,
     width: 150,
-    renderCell() {
-      return <div>ss</div>;
-    },
+    // renderCell() {
+    //   return <div>ss</div>;
+    // },
   },
   {
     field: "nombreDeJours",
@@ -160,7 +167,7 @@ export default function Page() {
     <>
       <div className="bg-dark text-secondary px-1 py-4 text-center">
         <div className="py-3">
-          <h1 className="display-5 fw-bold text-white">Suivi D'Excecution</h1>
+          <h1 className="display-5 fw-bold text-white">Suivi De Formation</h1>
           <div className="col-lg-6 mx-auto">
             <p className="fs-5 mb-4"></p>
             {/* <div className="d-none gap-2 d-sm-flex justify-content-sm-center">
