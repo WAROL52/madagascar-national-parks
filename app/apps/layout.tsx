@@ -127,10 +127,10 @@ export default function layout({ children }: { children: React.ReactNode }) {
                 style={{}}
               >
                 <nav className="sb-sidenav-menu-nested nav">
-                  <Link className="nav-link" href="projet-formation">
+                  <Link className="nav-link" href="/apps/projet-formation">
                     Formation
                   </Link>
-                  <a className="nav-link" href="projet-excecution">
+                  <a className="nav-link" href="/apps/projet-excecution">
                     Excecution
                   </a>
                 </nav>
