@@ -162,12 +162,7 @@ export default function Page() {
         <div className="py-3">
           <h1 className="display-5 fw-bold text-white">Suivi D'Excecution</h1>
           <div className="col-lg-6 mx-auto">
-            <p className="fs-5 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti
-              laboriosam animi asperiores delectus quasi neque recusandae
-              repellat, molestias autem aut, culpa nesciunt aspernatur quas
-              eligendi.
-            </p>
+            <p className="fs-5 mb-4"></p>
             {/* <div className="d-none gap-2 d-sm-flex justify-content-sm-center">
               <button
                 type="button"
