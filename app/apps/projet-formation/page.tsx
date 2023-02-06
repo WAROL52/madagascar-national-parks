@@ -43,6 +43,14 @@ const renderRisque: GridColDef["renderCell"] = ({ value }) => {
   }
   return <div className={` text-bg-${defaultOption.color} p-3`}> {value} </div>;
 };
+const etapes = [
+  "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
+  "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
+  "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
+  "IMPACTS, PGES, RISQUES, MGP ",
+  "RESTITUTION AUX COMMUNAUTES",
+  "EVALUATION PARTICIPATIVE ",
+];
 const renderProgression: GridColDef["renderCell"] = ({ value }) => {
   return (
     <div
@@ -60,11 +68,11 @@ const renderProgression: GridColDef["renderCell"] = ({ value }) => {
     </div>
   );
 };
-const rows: GridRowsProp = Array.from({ length: 15 }).map((_, index) => {
+const rows: GridRowsProp = etapes.map((etape, index) => {
   return {
     id: index,
-    site: "site" + index,
-    etape: "etape" + index,
+    site: "ABT",
+    etape,
     email: index + "raberolio@gmail.com",
     risqueProjet: "En bonne voie",
     risqueTache: "En bonne voie",
@@ -86,7 +94,7 @@ const columns: GridColDef[] = [
     headerName: "Site",
     headerClassName,
   },
-  { field: "etape", headerName: "Etape", headerClassName },
+  { field: "etape", headerName: "Etape", headerClassName, width: 300 },
   {
     field: "risqueProjet",
     headerName: "Risque-projet",
@@ -122,9 +130,9 @@ const columns: GridColDef[] = [
     headerName: "Debut Previonnel",
     headerClassName,
     width: 150,
-    renderCell() {
-      return <div>ss</div>;
-    },
+    // renderCell() {
+    //   return <div>ss</div>;
+    // },
   },
   {
     field: "nombreDeJours",
