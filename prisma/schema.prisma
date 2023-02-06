@@ -1,11 +1,101 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  email           String
+  nom             String?
+  prenom          String?
+  motdepasse      String?
+  ResponsableSite ResponsableSite?
+}
+
+model Site {
+  id              Int              @id @default(autoincrement())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt()
+  Formation       Formation?
+  Excecution      Excecution?
+  ResponsableSite ResponsableSite?
+}
+
+model RisqueProjet {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  value     Int
+  title     String
+  color     String?  @default("white")
+  Etape     Etape[]
+}
+
+model RisqueTache {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  color     String?  @default("white")
+  value     Int
+  title     String
+  Etape     Etape[]
+}
+
+model Etape {
+  id              Int          @id @default(autoincrement())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt()
+  risqueProject   RisqueProjet @relation(fields: [risqueProjetId], references: [id])
+  risqueProjetId  Int
+  risqueTache     RisqueTache  @relation(fields: [risqueTacheId], references: [id])
+  risqueTacheId   Int
+  progression     Int?         @default(0)
+  debutPrevionnel DateTime?    @default(now())
+  nombreDeJours   Int?         @default(0)
+  finPrevisionnel DateTime?    @default(now())
+  debutReel       DateTime?    @default(now())
+  finReel         DateTime?    @default(now())
+  perturbation    Int?         @default(0)
+  tempsConsommes  Int?         @default(0)
+  formation       Formation    @relation(fields: [formationId], references: [id])
+  formationId     Int
+  Excecution      Excecution?  @relation(fields: [excecutionId], references: [id])
+  excecutionId    Int?
+}
+
+model ResponsableSite {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  site      Site     @relation(fields: [siteId], references: [id])
+  siteId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+}
+
+model Formation {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  site      Site     @relation(fields: [siteId], references: [id])
+  siteId    Int      @unique
+  Etape     Etape[]
+}
+
+model Excecution {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  site      Site     @relation(fields: [siteId], references: [id])
+  siteId    Int      @unique
+  Etape     Etape[]
 }

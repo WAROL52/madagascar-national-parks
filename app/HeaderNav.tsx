@@ -7,15 +7,7 @@ import MenuNav from "./home/MenuNav";
 export default function HeaderNav() {
   return (
     <>
-      <nav className="navbar navbar-expand navbar-light bg-white topbar border-bottom static-top ">
-        {/* <!-- Sidebar Toggle (Topbar) --> */}
-        <button
-          id="sidebarToggleTop"
-          className="btn btn-link d-md-none rounded-circle mr-3"
-        >
-          <i className="fa fa-bars"></i>
-        </button>
-
+      <nav className="navbar navbar-expand navbar-light bg-white topbar border-bottom static-top shadow-sm ">
         {/* <!-- Topbar Search --> */}
         <div className="d-flex mx-3 flex-wrap align-items-center justify-content-center justify-content-lg-start">
           <Link
