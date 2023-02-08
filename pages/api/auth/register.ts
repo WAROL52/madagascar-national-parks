@@ -9,15 +9,8 @@ export default async function handler(
 ) {
   console.log(req.method);
   console.log(req.body);
-  try {
-    await prisma.$connect();
-    // const data = await prisma.$queryRaw`SELECT 1`;
-  } catch (error) {
-    // log error
-    console.log(error);
-    console.error(JSON.stringify(error, null, 2));
-  }
-  if (req.body == "POST") {
+  const ress = await prisma.user.findMany();
+  if (req.method == "POST") {
     const { nom, prenom, email, motdepasse } = req.body;
     const emailAccepted = await prisma.email.findUnique({
       where: {
@@ -44,7 +37,7 @@ export default async function handler(
       });
       return res.status(200).json(user);
     }
-    res.status(200).json({
+    return res.status(200).json({
       hasError: true,
       title: "Email non valide!",
       type: 1,
@@ -52,5 +45,6 @@ export default async function handler(
         "L'adresse e-mail que vous avez utilisée n'est pas autorisée à s'enregistrer sur cette plate-forme.",
     });
   }
-  return await prisma.user.findMany();
+  console.log("elseee");
+  return res.status(200).json(ress);
 }

@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { log } from "console";
 import { useRouter } from "next/navigation";
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState } from "react";
@@ -25,6 +26,7 @@ export default function FormRegister() {
     setLoading(true);
     const res = await axios.post("/api/auth/register", data);
     const dataRes = res.data;
+    console.log(dataRes);
     if (dataRes.hasError) {
       if (dataRes.type == 1) {
         return router.push("/register-refused");
