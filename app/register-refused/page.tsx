@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import Link from "next/link";
 import React from "react";
 
@@ -18,38 +19,13 @@ export default function page() {
                   <div className="p-5">
                     <div className="text-center">
                       <h1 className="h4 text-gray-900 mb-2">
-                        Mot de passe oublié?
+                        Email non valide
                       </h1>
                       <p className="mb-4">
-                        Entrez simplement votre adresse e-mail ci-dessous et
-                        nous vous enverrons un lien pour réinitialiser votre mot
-                        de passe!
+                        L'adresse e-mail que vous avez utilisée n'est pas
+                        autorisée à s'enregistrer sur cette plate-forme.
                       </p>
                     </div>
-                    <form
-                      className="user"
-                      action="/forgot-password"
-                      method="post"
-                    >
-                      <div className="form-group mb-3">
-                        <input
-                          type="email"
-                          name="email"
-                          className="form-control border rounded-pill"
-                          id="exampleInputEmail"
-                          aria-describedby="emailHelp"
-                          placeholder="Entrer votre adresse e-mail..."
-                        />
-                      </div>
-                      <div className="d-grid gap-2">
-                        <button
-                          className="btn btn-primary border rounded-pill"
-                          type="submit"
-                        >
-                          Réinitialiser le mot de passe
-                        </button>
-                      </div>
-                    </form>
                     <hr />
                     <div className="text-center">
                       <Link className="small" href="/register">
@@ -59,6 +35,11 @@ export default function page() {
                     <div className="text-center">
                       <Link className="small" href="/login">
                         Vous avez déjà un compte? Connexion!
+                      </Link>
+                    </div>
+                    <div className="text-center">
+                      <Link className="small" href="/forgot-password">
+                        Mot de passe oublié ?
                       </Link>
                     </div>
                   </div>

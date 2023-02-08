@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function page() {
@@ -72,14 +73,14 @@ export default function page() {
                     </form>
                     <hr />
                     <div className="text-center">
-                      <a className="small" href="/forgot-password">
+                      <Link className="small" href="/forgot-password">
                         Mot de passe oublié ?
-                      </a>
+                      </Link>
                     </div>
                     <div className="text-center">
-                      <a className="small" href="/register">
+                      <Link className="small" href="/register">
                         Créer nouveau compte!
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>

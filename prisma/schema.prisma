@@ -9,12 +9,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Email {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  email     String   @unique
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  email           String
+  email           String           @unique
   nom             String?
   prenom          String?
   motdepasse      String?

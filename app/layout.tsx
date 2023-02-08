@@ -1,4 +1,5 @@
 import "./globals.css";
+// import "./style.bundle.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Bootstrap from "./Bootstrap";
 import { testData } from "@/prisma/data";
@@ -15,7 +16,7 @@ export default function RootLayout({
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body>
+      <body data-kt-app-layout="dark-sidebar">
         <Bootstrap>{children}</Bootstrap>
       </body>
     </html>

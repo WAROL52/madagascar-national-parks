@@ -76,8 +76,8 @@ const rows: GridRowsProp = etapes.map((etape, index) => {
     email: index + "raberolio@gmail.com",
     risqueProjet: "En bonne voie",
     risqueTache: "En bonne voie",
-    responsable: "Rabe" + index,
-    progression: 50,
+    responsable: "Rabe",
+    progression: 0,
     debutPrevionnel: new Date(),
     nombreDeJours: 1,
     finPrevisionnel: new Date(),
@@ -93,20 +93,25 @@ const columns: GridColDef[] = [
     field: "site",
     headerName: "Site",
     headerClassName,
+    // resizable: true,
+    hide: true,
   },
-  { field: "etape", headerName: "Etape", headerClassName, width: 300 },
+  { field: "etape", headerName: "Tâche", headerClassName, width: 300 },
   {
     field: "risqueProjet",
     headerName: "Risque-projet",
     headerClassName,
+    // resizable: true,
     cellClassName: "p-0",
     width: 125,
+    hide: true,
     renderCell: renderRisque,
   },
   {
     field: "risqueTache",
     headerName: "Risque-tache",
     headerClassName,
+    // resizable: true,
     cellClassName: "p-0",
     width: 125,
     renderCell: renderRisque,
@@ -115,13 +120,16 @@ const columns: GridColDef[] = [
     field: "responsable",
     headerName: "Responsable",
     headerClassName,
+    // resizable: true,
     width: 125,
+    hide: true,
   },
   {
     field: "progression",
     headerName: "Progression",
     headerClassName,
     width: 125,
+    // resizable: true,
     cellClassName: "p-0",
     renderCell: renderProgression,
   },
@@ -129,7 +137,9 @@ const columns: GridColDef[] = [
     field: "debutPrevionnel",
     headerName: "Debut Previonnel",
     headerClassName,
+    // resizable: true,
     width: 150,
+    hide: true,
     // renderCell() {
     //   return <div>ss</div>;
     // },
@@ -138,27 +148,53 @@ const columns: GridColDef[] = [
     field: "nombreDeJours",
     headerName: "Nombre De Jours",
     headerClassName,
+    // resizable: true,
     width: 150,
   },
   {
     field: "finPrevisionnel",
     headerName: "Fin Previsionnel",
     headerClassName,
+    // resizable: true,
+    hide: true,
     width: 150,
   },
-  { field: "debutReel", headerName: "Debut Réel", headerClassName, width: 125 },
-  { field: "finReel", headerName: "Fin Réel", headerClassName, width: 125 },
   {
     field: "perturbation",
     headerName: "Perturbation",
     headerClassName,
+    // resizable: true,
     width: 125,
   },
   {
     field: "tempsConsommes",
     headerName: "Temps Consommes",
     headerClassName,
+    // resizable: true,
     width: 150,
+  },
+  {
+    field: "debutReel",
+    headerName: "Debut Réel",
+    headerClassName,
+    // resizable: true,
+    width: 125,
+    editable: true,
+    type: "date",
+    valueParser(value, param) {
+      return value;
+    },
+  },
+  {
+    field: "finReel",
+    headerName: "Fin Réel",
+    headerClassName,
+    width: 125,
+    editable: true,
+    type: "date",
+    valueParser(value, param) {
+      return value;
+    },
   },
 ];
 
@@ -187,7 +223,48 @@ export default function Page() {
           </div>
         </div>
       </div>
-
+      <div className="row text-bg-success">
+        <div className="col-3">
+          <span className="badge text-bg-dark">Responsable :</span>
+          <span>Rabe</span>
+        </div>
+        <div className="col-6">
+          <span className="badge text-bg-dark "> Tâche en cours :</span>
+          <span
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            data-bs-title="This top tooltip is themed via CSS variables."
+          >
+            {etapes.at(0)}
+          </span>
+        </div>
+        <div className="col-3">
+          <span className="badge text-bg-dark"> Risque-projet :</span>
+          <span>En bonne voie</span>
+        </div>
+      </div>
+      <div className="row text-bg-success">
+        <div className="col-3">
+          <span className="badge text-bg-dark">Site :</span>
+          <span>ABT</span>
+        </div>
+        <div className="col-6">
+          <span className="badge text-bg-dark ">Debut Previonnel :</span>
+          <span
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            data-bs-title="This top tooltip is themed via CSS variables."
+          >
+            02/06/2023
+          </span>
+        </div>
+        <div className="col-3">
+          <span className="badge text-bg-dark"> Fin Previsionnel:</span>
+          <span>02/06/2023</span>
+        </div>
+      </div>
       <div style={{ height: 500, width: "100%" }} className="shadow mb-3">
         <DataGrid
           rows={rows}

@@ -54,16 +54,16 @@ export default function HeaderNav() {
         {/* <!-- Topbar Navbar --> */}
 
         <div className="col-md-3 text-end mx-5">
-          <a
+          <Link
             href="/login"
             type="button"
             className="btn btn-outline-primary me-2"
           >
             Se connecter
-          </a>
-          <a href="/register" type="button" className="btn btn-warning">
+          </Link>
+          <Link href="/register" type="button" className="btn btn-warning">
             S'inscrire
-          </a>
+          </Link>
         </div>
       </nav>
     </>
