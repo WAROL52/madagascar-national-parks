@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prestart:dev": "prisma migrate dev",
+    "prisma:start": "prisma migrate dev && prisma migrate deploy",
     "start:dev": "next dev ",
 
-    "prebuild": "prisma migrate deploy",
+    "prebuild": "prisma migrate dev && prisma migrate deploy",
     "build": "next build",
 
     "start": "next start",
