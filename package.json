@@ -6,9 +6,9 @@
     "prestart:dev": "prisma migrate dev",
     "start:dev": "next dev ",
 
-    "prebuild": "prisma migrate dev",
+    "prebuild": "prisma migrate deploy",
     "build": "next build",
-    
+
     "start": "next start",
     "lint": "next lint"
   },
