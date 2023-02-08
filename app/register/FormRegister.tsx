@@ -105,7 +105,11 @@ export default function FormRegister() {
         </div>
       </div>
       <div className="d-grid gap-2">
-        <button className="btn btn-primary border rounded-pill" type="submit">
+        <button
+          disabled={isLoading}
+          className="btn btn-primary border rounded-pill"
+          type="submit"
+        >
           Créer un compte{" "}
           {isLoading && <Spinner animation="border" size="sm" />}
         </button>
