@@ -21,6 +21,7 @@ export default function FormRegister() {
     watch,
     formState: { errors },
   } = useForm<Inputs>();
+
   const router = useRouter();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
