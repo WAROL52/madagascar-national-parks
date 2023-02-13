@@ -4,6 +4,8 @@ CREATE TABLE `Email` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
+    `passwordToken` VARCHAR(191) NULL,
+    `role` ENUM('ResponsableSite', 'Admin', 'SuperAdmin') NOT NULL DEFAULT 'Admin',
 
     UNIQUE INDEX `Email_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -14,12 +16,12 @@ CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `email` VARCHAR(191) NOT NULL,
+    `emailId` INTEGER NOT NULL,
     `nom` VARCHAR(191) NULL,
     `prenom` VARCHAR(191) NULL,
     `motdepasse` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `User_emailId_key`(`emailId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -74,6 +76,10 @@ CREATE TABLE `Etape` (
     `formationId` INTEGER NOT NULL,
     `excecutionId` INTEGER NULL,
 
+    INDEX `Etape_risqueTacheId_idx`(`risqueTacheId`),
+    INDEX `Etape_risqueProjetId_idx`(`risqueProjetId`),
+    INDEX `Etape_formationId_idx`(`formationId`),
+    INDEX `Etape_excecutionId_idx`(`excecutionId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
