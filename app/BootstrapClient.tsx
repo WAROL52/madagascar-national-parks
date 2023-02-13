@@ -4,7 +4,7 @@ import { useEffect } from "react";
 export default function BootstrapClient({
   children,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   useEffect(() => {
     import("bootstrap");

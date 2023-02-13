@@ -17,16 +17,24 @@ generator client {
 
 datasource db {
   provider     = "mysql"
-  // url          = env("DATABASE_URL")
-  url          = "mysql://root:HEUpuVrWQmIytIwWDZ2n@containers-us-west-47.railway.app:5728/railway"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
+enum Role {
+  ResponsableSite
+  Admin
+  SuperAdmin
+}
+
 model Email {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-  email     String   @unique
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt()
+  email         String   @unique
+  passwordToken String?
+  role          Role     @default(Admin)
+  User          User?
 }
 
 model User {
@@ -34,7 +42,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  email           String           @unique
+  email   Email @relation(fields: [emailId], references: [id])
+  emailId Int   @unique
+
   nom             String?
   prenom          String?
   motdepasse      String?
@@ -90,6 +100,11 @@ model Etape {
   formationId     Int
   Excecution      Excecution?  @relation(fields: [excecutionId], references: [id])
   excecutionId    Int?
+
+  @@index([risqueTacheId])
+  @@index([risqueProjetId])
+  @@index([formationId])
+  @@index([excecutionId])
 }
 
 model ResponsableSite {

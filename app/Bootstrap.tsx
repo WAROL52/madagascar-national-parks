@@ -1,4 +1,3 @@
-"use client";
 import FooterNav from "./FooterNav";
 import HeaderNav from "./HeaderNav";
 import SSRProvider from "react-bootstrap/SSRProvider";
@@ -9,19 +8,12 @@ import BootstrapClient from "./BootstrapClient";
 export default function Bootstrap({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <BootstrapClient>
-        <SSRProvider>
-          {/* <AppNextUIProvider> */}
-          {/* <PersistentDrawerLeft> */}
-          <ProSidebarProvider>
-            <HeaderNav />
-            {children}
-            <FooterNav />
-          </ProSidebarProvider>
-          ;{/* </PersistentDrawerLeft> */}
-          {/* </AppNextUIProvider> */}
-        </SSRProvider>
-      </BootstrapClient>
+      {/* <SSRProvider> */}
+      <HeaderNav />
+      {children}
+      <BootstrapClient />
+      <FooterNav />
+      {/* </SSRProvider> */}
     </>
   );
 }

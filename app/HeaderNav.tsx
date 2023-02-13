@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import MenuNav from "./home/MenuNav";
-
+import { cookies } from "next/headers";
+import { PrismaClient } from "@prisma/client";
+import NavTools from "./components/NavTools";
 export default function HeaderNav() {
   return (
     <>
@@ -52,19 +54,7 @@ export default function HeaderNav() {
           </li>
         </ul>
         {/* <!-- Topbar Navbar --> */}
-
-        <div className="col-md-3 text-end mx-5">
-          <Link
-            href="/login"
-            type="button"
-            className="btn btn-outline-primary me-2"
-          >
-            Se connecter
-          </Link>
-          <Link href="/register" type="button" className="btn btn-warning">
-            S'inscrire
-          </Link>
-        </div>
+        <NavTools />
       </nav>
     </>
   );

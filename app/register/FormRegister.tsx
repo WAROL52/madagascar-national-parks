@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { SubmitHandler, useForm } from "react-hook-form";
+import Cookies from "js-cookie";
+
 type Inputs = {
   email: string;
   nom: string;
@@ -34,11 +36,11 @@ export default function FormRegister() {
       }
       return router.push("/register-refused2");
     } else {
-      router.push("/login");
+      const { email, motdepasse, nom, prenom } = data;
+      Cookies.set("user", JSON.stringify({ email, motdepasse, nom, prenom }));
+      return router.push("/apps");
     }
-  };
-
-  console.log(watch("email")); // watch input value by passing the name of it
+  }; // watch input value by passing the name of it
   return (
     <form className="user needs-validation  " onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group row mb-3">

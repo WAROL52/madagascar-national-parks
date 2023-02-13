@@ -2,8 +2,6 @@ import "./globals.css";
 // import "./style.bundle.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Bootstrap from "./Bootstrap";
-import { testData } from "@/prisma/data";
-testData();
 export default function RootLayout({
   children,
 }: {
