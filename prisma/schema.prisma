@@ -30,9 +30,11 @@ generator nestjsDto {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   // url          = env("DATABASE_URL")
-  url          = "mysql://root:HEUpuVrWQmIytIwWDZ2n@containers-us-west-47.railway.app:5728/railway"
+  url          = "postgres://mnp52_user:Z9pCOvlwnggNLk42wCtK42Xlmu7GaMrc@dpg-cfhupkkgqg40klkgj4jg-a.frankfurt-postgres.render.com/mnp52"
+  // url          = "mysql://a6098r0v74508tisnoeg:pscale_pw_N5VRWSnyEIjOGfwbI9qSINhGHbhcRyVP7f2i4teDNqj@us-east.connect.psdb.cloud/mnp52?sslaccept=strict"
+  // url          = "mysql://root:HEUpuVrWQmIytIwWDZ2n@containers-us-west-47.railway.app:5728/railway"
   relationMode = "prisma"
 }
 
