@@ -16,7 +16,7 @@ export default async function page({
     include: { email: true },
   });
 
-  const values = Object.values(user as object);
+  const values = Object.values((user as object) || {});
   const isCompleted = !!values.find((v) => v == null);
   return (
     <>

@@ -1,11 +1,11 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-// datasource db {
-//   provider = "sqlite"
-//   // provider = "postgresql"
-//   // url      = env("DATABASE_URL")
-//   url      = "file:database.sqlite3"
-// }
+datasource db {
+  provider = "sqlite"
+  // provider = "postgresql"
+  // url      = env("DATABASE_URL")
+  url      = "file:../node_modules/.prisma/client/database.sqlite3"
+}
 
 // generator client {
 //   provider = "prisma-client-js"
@@ -29,20 +29,16 @@ generator nestjsDto {
   fileNamingStyle                 = "kebab"
 }
 
-datasource db {
-  provider     = "postgresql"
-  // url          = env("DATABASE_URL")
-  url          = "postgres://mnp52_user:Z9pCOvlwnggNLk42wCtK42Xlmu7GaMrc@dpg-cfhupkkgqg40klkgj4jg-a.frankfurt-postgres.render.com/mnp52"
-  // url          = "mysql://a6098r0v74508tisnoeg:pscale_pw_N5VRWSnyEIjOGfwbI9qSINhGHbhcRyVP7f2i4teDNqj@us-east.connect.psdb.cloud/mnp52?sslaccept=strict"
-  // url          = "mysql://root:HEUpuVrWQmIytIwWDZ2n@containers-us-west-47.railway.app:5728/railway"
-  relationMode = "prisma"
-}
+// datasource db {
+//   provider = "mysql"
+//   url      = "mysql://xigh60z4mo532i37sac8:pscale_pw_pANR8dbWvNWmiAzcF8L75NEi4VVMEGGaP4WGYHRR9FQ@us-east.connect.psdb.cloud/mnp-database?sslaccept=strict"
+// }
 
-enum Role {
-  ResponsableSite
-  Admin
-  SuperAdmin
-}
+// enum Role {
+//   ResponsableSite
+//   Admin
+//   SuperAdmin
+// }
 
 model Email {
   id            Int      @id @default(autoincrement())
@@ -50,14 +46,14 @@ model Email {
   updatedAt     DateTime @updatedAt()
   email         String   @unique
   passwordToken String?
-  role          Role     @default(Admin)
+  role          String? //Role     @default(Admin)
   User          User?
 }
 
-enum Sexe {
-  Homme
-  Femme
-}
+// enum Sexe {
+//   Homme
+//   Femme
+// }
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -76,7 +72,7 @@ model User {
   dataNaissance   DateTime?
   lieuNaissance   String?
   ResponsableSite ResponsableSite?
-  sexe            Sexe             @default(Homme)
+  sexe            String? //Sexe             @default(Homme)
   description     String?
   avatar          String?
 }
