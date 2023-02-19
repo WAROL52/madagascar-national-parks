@@ -5,7 +5,7 @@
   "scripts": {
     "prisma:start": "prisma migrate dev && prisma migrate deploy",
     "start:dev": "next dev ",
-    "prebuild": "prisma migrate dev && prisma migrate deploy",
+    "prebuild": "prisma generate",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

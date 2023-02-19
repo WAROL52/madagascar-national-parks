@@ -1,11 +1,11 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-datasource db {
-  provider = "sqlite"
-  // provider = "postgresql"
-  // url      = env("DATABASE_URL")
-  url      = "file:../node_modules/.prisma/client/database.sqlite3"
-}
+// datasource db {
+//   provider = "sqlite"
+//   // provider = "postgresql"
+//   // url      = env("DATABASE_URL")
+//   url      = "file:../node_modules/.prisma/client/database.sqlite3"
+// }
 
 // generator client {
 //   provider = "prisma-client-js"
@@ -29,16 +29,17 @@ generator nestjsDto {
   fileNamingStyle                 = "kebab"
 }
 
-// datasource db {
-//   provider = "mysql"
-//   url      = "mysql://xigh60z4mo532i37sac8:pscale_pw_pANR8dbWvNWmiAzcF8L75NEi4VVMEGGaP4WGYHRR9FQ@us-east.connect.psdb.cloud/mnp-database?sslaccept=strict"
-// }
+datasource db {
+  relationMode = "prisma"
+  provider     = "mysql"
+  url          = "mysql://xigh60z4mo532i37sac8:pscale_pw_pANR8dbWvNWmiAzcF8L75NEi4VVMEGGaP4WGYHRR9FQ@us-east.connect.psdb.cloud/mnp-database?sslaccept=strict"
+}
 
-// enum Role {
-//   ResponsableSite
-//   Admin
-//   SuperAdmin
-// }
+enum Role {
+  ResponsableSite
+  Admin
+  SuperAdmin
+}
 
 model Email {
   id            Int      @id @default(autoincrement())
@@ -46,14 +47,14 @@ model Email {
   updatedAt     DateTime @updatedAt()
   email         String   @unique
   passwordToken String?
-  role          String? //Role     @default(Admin)
+  role          Role     @default(Admin)
   User          User?
 }
 
-// enum Sexe {
-//   Homme
-//   Femme
-// }
+enum Sexe {
+  Homme
+  Femme
+}
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -72,7 +73,7 @@ model User {
   dataNaissance   DateTime?
   lieuNaissance   String?
   ResponsableSite ResponsableSite?
-  sexe            String? //Sexe             @default(Homme)
+  sexe            Sexe             @default(Homme)
   description     String?
   avatar          String?
 }

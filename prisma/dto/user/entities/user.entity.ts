@@ -1,4 +1,5 @@
 
+import {Sexe} from '@prisma/client'
 import {Email} from '../../email/entities/email.entity'
 import {ResponsableSite} from '../../responsable-site/entities/responsable-site.entity'
 
@@ -18,7 +19,7 @@ adresse: string  | null;
 dataNaissance: Date  | null;
 lieuNaissance: string  | null;
 ResponsableSite?: ResponsableSite  | null;
-sexe: string  | null;
+sexe: Sexe ;
 description: string  | null;
 avatar: string  | null;
 }
