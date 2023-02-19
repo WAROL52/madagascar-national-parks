@@ -1,5 +1,3 @@
-
-  export class ConnectEtapeDto {
-    id: number;
-  }
-  
+export class ConnectEtapeDto {
+  id: number;
+}
