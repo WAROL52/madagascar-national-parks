@@ -12,8 +12,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.method);
-  console.log(req.body);
   const ress = await prisma.user.findMany();
 
   if (req.method == "POST") {

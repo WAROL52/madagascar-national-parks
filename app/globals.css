@@ -273,3 +273,6 @@ footer {
   background-size: cover;
   background-repeat: no-repeat;
 }
+.h-200px {
+  height: 200px;
+}

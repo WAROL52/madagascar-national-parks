@@ -11,8 +11,8 @@ export default function Bootstrap({ children }: { children: React.ReactNode }) {
       {/* <SSRProvider> */}
       <HeaderNav />
       {children}
-      <BootstrapClient />
       <FooterNav />
+      <BootstrapClient></BootstrapClient>
       {/* </SSRProvider> */}
     </>
   );

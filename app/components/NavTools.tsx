@@ -1,12 +1,20 @@
 /* eslint-disable react/no-unescaped-entities */
-"use client";
-import Cookies from "js-cookie";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
-
+type UserType = Partial<{
+  email: string;
+  motdepasse: string;
+  nom: string;
+  prenom: string;
+  id: number;
+}>;
 export default function NavTools() {
-  const userCookies = Cookies.get("user") || "";
-  const user = JSON.parse(userCookies || "{}");
+  const Cookies = cookies();
+  const userCookies = Cookies.get("user")?.value || "";
+  const user = JSON.parse(userCookies || "{}") as UserType;
+  console.log("navvv", user);
+
   return (
     <>
       <div hidden={!!userCookies} className="col-md-3 text-end mx-5">
@@ -24,7 +32,7 @@ export default function NavTools() {
       <div hidden={!userCookies} className="flex-shrink-0 dropdown  mx-5">
         <a
           href="#"
-          className="d-block link-dark text-bg-light text-decoration-none dropdown-toggle"
+          className="d-block link-dark text-bg-light text-decoration-none dropdown-toggle mx-5"
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
@@ -39,19 +47,25 @@ export default function NavTools() {
         </a>
         <ul className="dropdown-menu text-small shadow" style={{}}>
           <li>
-            <a className="dropdown-item" href="#">
+            <Link className="dropdown-item" href="/apps">
               Apps
-            </a>
+            </Link>
           </li>
           <li>
-            <a className="dropdown-item" href="#">
-              Parametre
-            </a>
+            <Link
+              className="dropdown-item"
+              href={`/apps/user/${user.id}/parametres`}
+            >
+              Paramètre
+            </Link>
           </li>
           <li>
-            <a className="dropdown-item" href="#">
+            <Link
+              className="dropdown-item"
+              href={`/apps/user/${user.id}/apercue`}
+            >
               Profile
-            </a>
+            </Link>
           </li>
           <li>
             <hr className="dropdown-divider" />

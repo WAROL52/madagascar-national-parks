@@ -15,6 +15,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "./dto"
+  outputToNestJsResourceStructure = "true"
+  exportRelationModifierClasses   = "true"
+  // reExport                        = "false"
+  // createDtoPrefix                 = "Create"
+  // updateDtoPrefix                 = "Update"
+  // dtoSuffix                       = "Dto"
+  // entityPrefix                    = ""
+  // entitySuffix                    = ""
+  fileNamingStyle                 = "kebab"
+}
+
 datasource db {
   provider     = "mysql"
   // url          = env("DATABASE_URL")
@@ -38,18 +52,31 @@ model Email {
   User          User?
 }
 
+enum Sexe {
+  Homme
+  Femme
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  email   Email @relation(fields: [emailId], references: [id])
-  emailId Int   @unique
+  email   Email  @relation(fields: [emailId], references: [id])
+  emailId Int    @unique
+  nom     String
+  prenom  String
 
-  nom             String?
-  prenom          String?
   motdepasse      String?
+  tel1            String?
+  tel2            String?
+  adresse         String?
+  dataNaissance   DateTime?
+  lieuNaissance   String?
   ResponsableSite ResponsableSite?
+  sexe            Sexe             @default(Homme)
+  description     String?
+  avatar          String?
 }
 
 model Site {

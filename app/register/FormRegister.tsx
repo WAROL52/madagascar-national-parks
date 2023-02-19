@@ -20,7 +20,6 @@ export default function FormRegister() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
 
@@ -29,15 +28,17 @@ export default function FormRegister() {
     setLoading(true);
     const res = await axios.post("/api/auth/register", data);
     const dataRes = res.data;
-    console.log(dataRes);
     if (dataRes.hasError) {
       if (dataRes.type == 1) {
         return router.push("/register-refused");
       }
       return router.push("/register-refused2");
     } else {
-      const { email, motdepasse, nom, prenom } = data;
-      Cookies.set("user", JSON.stringify({ email, motdepasse, nom, prenom }));
+      const { email, motdepasse, nom, prenom, id } = dataRes;
+      Cookies.set(
+        "user",
+        JSON.stringify({ email, motdepasse, nom, prenom, id })
+      );
       return router.push("/apps");
     }
   }; // watch input value by passing the name of it
