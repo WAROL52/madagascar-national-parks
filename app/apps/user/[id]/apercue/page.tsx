@@ -15,9 +15,19 @@ export default async function page({
     where: { id: +params.id },
     include: { email: true },
   });
-
-  const values = Object.values((user as object) || {});
-  const isCompleted = !!values.find((v) => v == null);
+  const listKey: (keyof typeof user)[] = [
+    "nom",
+    "prenom",
+    "adresse",
+    "dataNaissance",
+    "description",
+    "lieuNaissance",
+    "sexe",
+    "tel1",
+    "tel2",
+  ];
+  const f = listKey.map((key) => user[key]).filter((k) => k);
+  const isNoCompleted = f.length !== listKey.length;
   return (
     <>
       <div className="card card-flush mb-5 ">
@@ -25,7 +35,9 @@ export default async function page({
         <div className="card-header cursor-pointer text-bg-warning">
           {/*begin::Card title*/}
           <div className="card-title m-0">
-            <h3 className="fw-bold m-0">Détails du profil</h3>
+            <h3 className="fw-bold m-0">
+              Détails du profile {String(isNoCompleted)}{" "}
+            </h3>
           </div>
           {/*end::Card title*/}
           {/*begin::Action*/}
@@ -121,7 +133,6 @@ export default async function page({
           {/*end::Input group*/}
           {/*begin::Input group*/}
           <div className="row mb-7">
-            {/*begin::Label*/}
             <label className="col-lg-4 fw-semibold text-muted">
               Date et Lieu de Naissance
               <i
@@ -132,16 +143,15 @@ export default async function page({
                 data-kt-initialized={1}
               />
             </label>
-            {/*end::Label*/}
-            {/*begin::Col*/}
             <div className="col-lg-8">
               <span className="fw-bold fs-6 text-gray-800">
-                {user?.lieuNaissance &&
-                  user?.dataNaissance &&
-                  user?.lieuNaissance + "à" + user?.dataNaissance}
+                {user?.lieuNaissance && user?.dataNaissance
+                  ? `${user?.dataNaissance.toLocaleDateString()} à ${
+                      user?.lieuNaissance
+                    }`
+                  : ""}
               </span>
             </div>
-            {/*end::Col*/}
           </div>
           {/*end::Input group*/}
           {/*begin::Input group*/}
@@ -157,7 +167,7 @@ export default async function page({
             </div>
             {/*end::Col*/}
           </div>
-          {!isCompleted && (
+          {isNoCompleted && (
             <div className="notice d-flex bg-light-warning rounded border-warning border border-dashed  p-6">
               {/*begin::Icon*/}
               {/*begin::Svg Icon | path: icons/duotune/general/gen044.svg*/}

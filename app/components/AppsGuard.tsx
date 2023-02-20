@@ -12,7 +12,7 @@ export default function AppsGuard() {
   const router = useRouter();
   const userCookies = Cookies.get("user") || "";
   const user = JSON.parse(userCookies || "{}") as UserType;
-  console.log(user);
+  console.log("AppsGuard:", user);
 
   if (!Object.keys(user).length) {
     router.push("/login");

@@ -1,5 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/alt-text */
+import { getUserCookiesServer } from "@/tools/authServer";
+import { getAvatarUser } from "@/tools/tools";
+import { redirect } from "next/navigation";
 import React from "react";
 import MenuOfUser from "./MenuOfUser";
 const menus = [
@@ -37,6 +40,10 @@ export default function layout({
     id: string;
   };
 }) {
+  const user = getUserCookiesServer();
+  if (!user) {
+    return redirect("/login");
+  }
   return (
     <>
       <div id="kt_app_content" className="app-content  flex-column-fluid ">
@@ -64,7 +71,7 @@ export default function layout({
                     className="symbol  py-0 symbol-125px symbol-lg-150px symbol-fixed position-relative mt-n3"
                   >
                     <img
-                      src="/images/man.svg"
+                      src={getAvatarUser(user.avatar, user.sexe)}
                       alt="image"
                       className="border border-white border-4 h-200px scale-x-2"
                       style={{
@@ -89,7 +96,7 @@ export default function layout({
                         href="#"
                         className="text-gray-800 text-hover-primary fs-2 fw-bolder me-1"
                       >
-                        RABETSY Rolio
+                        {user.nom} {user.prenom}
                       </a>
                       <a
                         href="#"
@@ -123,8 +130,7 @@ export default function layout({
                     {/*end::Name*/}
                     {/*begin::Text*/}
                     <span className="fw-bold text-gray-600 fs-6 mb-2 d-block">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                      Magnam, officia!
+                      {user.description}
                     </span>
                     {/*end::Text*/}
                     {/*begin::Info*/}

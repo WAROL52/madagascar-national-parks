@@ -13,19 +13,38 @@ import Link from "next/link";
 import AppsGuard from "../components/AppsGuard";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getUserCookiesServer, setUserCookiesServer } from "@/tools/authServer";
+import { PrismaClient } from "@prisma/client";
 type UserType = Partial<{
   email: string;
   motdepasse: string;
   nom: string;
   prenom: string;
 }>;
-export default function layout({ children }: { children: React.ReactNode }) {
-  const Cookies = cookies();
-  const userCookies = Cookies.get("user")?.value || "";
-  const user = JSON.parse(userCookies || "{}") as UserType;
+export default async function layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // const Cookies = cookies();
+  // const userCookies = Cookies.get("user")?.value || "";
+  // const user = JSON.parse(userCookies || "{}") as UserType;
+  const user = getUserCookiesServer();
 
-  if (!Object.keys(user).length) {
+  if (!user) {
     redirect("/login");
+  }
+  if (user.id) {
+    const prisma = new PrismaClient();
+    const USERDATA = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+    if (!USERDATA) {
+      console.log("Apps.layout:redirect", USERDATA);
+      redirect("/login");
+    }
   }
   return (
     <>

@@ -9,7 +9,7 @@ export function ReglageRoleResponsableDeSite() {
           </span>
         </div>
         <br />
-        <div className="col-md-12">
+        {/* <div className="col-md-12">
           <label className="labels">Experience in Designing</label>
           <input
             type="text"
@@ -25,7 +25,7 @@ export function ReglageRoleResponsableDeSite() {
             className="form-control"
             placeholder="additional details"
           />
-        </div>
+        </div> */}
       </div>
     </>
   );

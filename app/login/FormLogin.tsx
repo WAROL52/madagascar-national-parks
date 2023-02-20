@@ -1,4 +1,5 @@
 "use client";
+import { setUserCookiesClient } from "@/tools/authClient";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -34,8 +35,7 @@ export default function FormLogin() {
         description: dataRes.description,
       });
     }
-    const { email, motdepasse, nom, prenom, id } = dataRes;
-    Cookies.set("user", JSON.stringify({ email, motdepasse, nom, prenom, id }));
+    setUserCookiesClient(dataRes);
     setLoading(false);
     return router.push("/apps");
   };

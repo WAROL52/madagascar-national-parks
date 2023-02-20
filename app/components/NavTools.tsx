@@ -1,4 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
+import { getUserCookiesServer } from "@/tools/authServer";
+import { getAvatarUser } from "@/tools/tools";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
@@ -10,26 +12,12 @@ type UserType = Partial<{
   id: number;
 }>;
 export default function NavTools() {
-  const Cookies = cookies();
-  const userCookies = Cookies.get("user")?.value || "";
-  const user = JSON.parse(userCookies || "{}") as UserType;
-  console.log("navvv", user);
+  const user = getUserCookiesServer();
+  if (user) {
+    const imgSrc = getAvatarUser(user.avatar, user.sexe);
 
-  return (
-    <>
-      <div hidden={!!userCookies} className="col-md-3 text-end mx-5">
-        <Link
-          href="/login"
-          type="button"
-          className="btn btn-outline-primary me-2"
-        >
-          Se connecter
-        </Link>
-        <Link href="/register" type="button" className="btn btn-warning">
-          S'inscrire
-        </Link>
-      </div>
-      <div hidden={!userCookies} className="flex-shrink-0 dropdown  mx-5">
+    return (
+      <div className="flex-shrink-0 dropdown  mx-5">
         <a
           href="#"
           className="d-block link-dark text-bg-light text-decoration-none dropdown-toggle mx-5"
@@ -38,7 +26,7 @@ export default function NavTools() {
         >
           {user?.prenom}
           <img
-            src="https://github.com/mdo.png"
+            src={imgSrc}
             alt="mdo"
             width={32}
             height={32}
@@ -76,6 +64,22 @@ export default function NavTools() {
             </a>
           </li>
         </ul>
+      </div>
+    );
+  }
+  return (
+    <>
+      <div className="col-md-3 text-end mx-5">
+        <Link
+          href="/login"
+          type="button"
+          className="btn btn-outline-primary me-2"
+        >
+          Se connecter
+        </Link>
+        <Link href="/register" type="button" className="btn btn-warning">
+          S'inscrire
+        </Link>
       </div>
     </>
   );

@@ -2,6 +2,9 @@
   "name": "madagascar-national-parks",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "ts-node  prisma/seed.ts"
+  },
   "scripts": {
     "prisma:start": "prisma migrate dev && prisma migrate deploy",
     "start:dev": "next dev ",
@@ -43,6 +46,7 @@
     "prisma": "^4.9.0",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.0",
+    "react-datepicker": "^4.10.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.1",
     "react-images-uploading": "^3.1.7",

@@ -1,14 +1,19 @@
-import { getUserCookiesClient } from "@/tools/cookiesHandler";
+import { getUserCookiesClient } from "@/tools/authClient";
 import { UseFormRegister } from "react-hook-form";
 import { InputUserPrifileSettingType } from "./FormUserPrifileSetting";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 export function ReglageProfile({
   register,
 }: {
   register: UseFormRegister<InputUserPrifileSettingType>;
 }) {
   const user = getUserCookiesClient();
-  console.log(user);
+  const date = new Date(user.dataNaissance);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = date.getMonth().toString().padStart(2, "0");
+  const year = date.getFullYear();
+  const dateNaissance = `${year}-${month}-${day}`;
   return (
     <>
       <div className="p-3 py-5">
@@ -77,7 +82,7 @@ export function ReglageProfile({
               className="form-control"
               placeholder="Votre date de naissance..."
               {...register("dataNaissance")}
-              defaultValue={(user?.dataNaissance || "").toString()}
+              defaultValue={dateNaissance}
             />
           </div>
           <div className="col-md-6 mb-3">

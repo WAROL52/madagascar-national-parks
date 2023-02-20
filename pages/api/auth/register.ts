@@ -1,10 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { sendMail } from "@/tools/nodemailer";
 import { PrismaClient, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import Chance from "chance";
 import { faker } from "@faker-js/faker";
-import validate from "deep-email-validator";
 
 const prisma = new PrismaClient();
 

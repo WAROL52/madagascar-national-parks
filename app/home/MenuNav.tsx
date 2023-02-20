@@ -25,7 +25,7 @@ const menuNavs: MenuNavType = [
 export default function MenuNav() {
   const pathname = usePathname();
   const titleActived = pathname?.split("/")[1];
-  console.log(titleActived);
+  console.log("MenuNav:", titleActived);
 
   return (
     <>

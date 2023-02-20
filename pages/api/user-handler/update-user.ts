@@ -11,14 +11,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  console.log("req--->", req.method);
-  console.log(req.body);
   if (req.method == "POST") {
     const data = req.body as UpdateUserDto & { id: number };
     const id = data[`id`] as number;
     const user = await prisma.user.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        dataNaissance: new Date(data.dataNaissance),
+      },
+      include: {
+        email: true,
+        ResponsableSite: true,
+      },
     });
     return res.status(200).json(user);
   }

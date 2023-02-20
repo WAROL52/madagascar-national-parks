@@ -1,10 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { sendMail } from "@/tools/nodemailer";
 import { PrismaClient, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import Chance from "chance";
-import { faker } from "@faker-js/faker";
-import validate from "deep-email-validator";
 
 const prisma = new PrismaClient();
 
@@ -57,6 +53,5 @@ export default async function handler(
         "L'adresse e-mail ou le mots de passe que vous avez utilisée n'est pas valide",
     });
   }
-  console.log("elseee");
   return res.status(200).json(ress);
 }

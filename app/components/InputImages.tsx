@@ -11,8 +11,10 @@ import { InputUserPrifileSettingType } from "../apps/user/[id]/parametres/FormUs
 
 export function InputImages({
   register,
+  defaultSrc,
 }: {
   register: UseFormRegister<InputUserPrifileSettingType>;
+  defaultSrc: string;
 }) {
   const [images, setImages] = React.useState<ImageType[]>([]);
   const maxNumber = 69;
@@ -34,6 +36,7 @@ export function InputImages({
         onChange={onChange}
         maxNumber={maxNumber}
         dataURLKey="data_url"
+        {...register("avatar")}
       >
         {({
           imageList,
@@ -48,11 +51,7 @@ export function InputImages({
           <div className="upload__image-wrapper">
             {!imageList.length ? (
               <>
-                <img
-                  className="img-thumbnail"
-                  width="75%"
-                  src="/images/man.svg"
-                />
+                <img className="img-thumbnail" width="75%" src={defaultSrc} />
                 <span className="font-weight-bold">RABETSY Rolio</span>
                 <span className="text-black-50 badge">raberolio@gmail.com</span>
               </>
