@@ -19,21 +19,19 @@ export function InputImages({
   const [images, setImages] = React.useState<ImageType[]>([]);
   const maxNumber = 69;
 
-  const onChange: ImageUploadingPropsType["onChange"] = (
-    imageList,
-    addUpdateIndex
-  ) => {
-    // data for submit
-    console.log(imageList, addUpdateIndex);
-    setImages(imageList);
-  };
+  // const onChange: ImageUploadingPropsType["onChange"] =
 
   return (
     <div className="App">
       <ImageUploading
         multiple={false}
         value={images}
-        onChange={onChange}
+        //@ts-ignore
+        onChange={(value: any) => {
+          // data for submit
+          console.log(value);
+          setImages(value);
+        }}
         maxNumber={maxNumber}
         dataURLKey="data_url"
         {...register("avatar")}
