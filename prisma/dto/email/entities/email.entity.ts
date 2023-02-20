@@ -1,5 +1,5 @@
 
-import {Role} from '@prisma/client'
+import {Role,SiteName} from '@prisma/client'
 import {User} from '../../user/entities/user.entity'
 
 
@@ -10,5 +10,6 @@ updatedAt: Date ;
 email: string ;
 passwordToken: string  | null;
 role: Role ;
+siteName: SiteName ;
 User?: User  | null;
 }

@@ -41,6 +41,52 @@ enum Role {
   SuperAdmin
 }
 
+enum SiteName {
+  aucun
+  tous
+  ABT
+  ABV
+  AHL
+  AJS
+  AKF
+  ALZ
+  AND
+  ANK
+  ANL
+  ARG
+  BBL
+  BMR
+  BTP
+  BZM
+  CSM
+  ISL
+  IVB
+  KLB
+  MDA
+  MDS
+  MGV
+  MKA
+  MNB
+  MNG
+  MNN
+  MRJ
+  MRL
+  MRT
+  MSL
+  MTD
+  NMGB
+  NMK
+  NSH
+  NST
+  NSV
+  RAN
+  SML
+  TSP
+  TST
+  ZHM
+  ZVB
+}
+
 model Email {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now())
@@ -48,6 +94,7 @@ model Email {
   email         String   @unique
   passwordToken String?
   role          Role     @default(Admin)
+  siteName      SiteName @default(aucun)
   User          User?
 }
 

@@ -11,9 +11,10 @@ export function ReglageProfile({
   const user = getUserCookiesClient();
   const date = new Date(user.dataNaissance);
   const day = date.getDate().toString().padStart(2, "0");
-  const month = date.getMonth().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
   const dateNaissance = `${year}-${month}-${day}`;
+
   return (
     <>
       <div className="p-3 py-5">
@@ -76,7 +77,7 @@ export function ReglageProfile({
             />
           </div>
           <div className="col-md-6 mb-3">
-            <label className="labels">Date de naissance</label>
+            <label className="labels">Date de naissance </label>
             <input
               type="date"
               className="form-control"
