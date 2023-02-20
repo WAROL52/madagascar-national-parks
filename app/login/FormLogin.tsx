@@ -38,7 +38,7 @@ export default function FormLogin() {
     setUserCookiesClient(dataRes);
     setLoading(false);
     router.refresh();
-    return router.push("/apps");
+    return router.push(`/apps/user/${dataRes.id}/apercue`);
   };
   const router = useRouter();
   return (

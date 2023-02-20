@@ -40,7 +40,7 @@ export default function FormRegister() {
         JSON.stringify({ email, motdepasse, nom, prenom, id })
       );
       router.refresh();
-      return router.push("/apps");
+      return router.push(`/apps/user/${id}/apercue`);
     }
   }; // watch input value by passing the name of it
   return (
