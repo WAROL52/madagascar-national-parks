@@ -39,6 +39,7 @@ export default function FormRegister() {
         "user",
         JSON.stringify({ email, motdepasse, nom, prenom, id })
       );
+      router.refresh();
       return router.push("/apps");
     }
   }; // watch input value by passing the name of it

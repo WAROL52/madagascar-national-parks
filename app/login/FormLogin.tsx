@@ -37,6 +37,7 @@ export default function FormLogin() {
     }
     setUserCookiesClient(dataRes);
     setLoading(false);
+    router.refresh();
     return router.push("/apps");
   };
   const router = useRouter();
