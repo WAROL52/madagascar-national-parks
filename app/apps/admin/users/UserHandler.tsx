@@ -53,10 +53,7 @@ export function UserHandler() {
   }, [idSelected, users]);
   return (
     <>
-      <div
-        className="app-content flex-column-fluid"
-        style={{ height: "600px" }}
-      >
+      <div className="app-content flex-column-fluid">
         {/*begin::Content container*/}
         <div
           id="kt_app_content_container"
@@ -64,7 +61,7 @@ export function UserHandler() {
         >
           <div className="row g-7">
             {/*begin::Search*/}
-            <div className="col-lg-6 col-xl-3 shadow-lg">
+            <div className="col-md-5 col-xl-3 shadow-lg">
               {/*begin::Contacts*/}
               <div className="card card-flush" id="kt_contacts_list">
                 {/*begin::Card header*/}
@@ -123,7 +120,11 @@ export function UserHandler() {
                   >
                     {" "}
                   </SaveLoading>
-                  <ListGroup variant="flush" className="bg-secondary">
+                  <ListGroup
+                    variant="flush"
+                    className="bg-secondary overflow-y"
+                    style={{ height: "300px" }}
+                  >
                     {users.map((user, index) => (
                       <ListGroup.Item
                         key={index}
@@ -167,7 +168,7 @@ export function UserHandler() {
               </div>
               {/*end::Contacts*/}
             </div>
-            <div className="col-xl-9 shadow-lg">
+            <div className="col-md-7 col-xl-9 shadow-lg">
               <div className="card card-flush h-lg-100" id="kt_contacts_main">
                 <div className="card-header pt-7" id="kt_chat_contacts_header">
                   {/*begin::Card title*/}

@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
+import SaveLoading from "@/app/components/SaveLoading";
 import { Email } from "@/prisma/dto/email/entities/email.entity";
 import { SiteName, Role } from "@prisma/client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
@@ -134,8 +134,12 @@ export default function AddUser({
             disabled={isLoading || !isEmailValid(email)}
             onClick={handleSave}
           >
-            Sauvegarder
-            {isLoading && <Spinner animation="border" size="sm" />}
+            <SaveLoading
+              textLoading="Sauvegarde en cours..."
+              isLoading={isLoading}
+            >
+              Sauvegarder
+            </SaveLoading>
           </Button>
         </Modal.Footer>
       </Modal>
