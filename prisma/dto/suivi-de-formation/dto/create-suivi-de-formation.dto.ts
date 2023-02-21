@@ -1,20 +1,14 @@
-
-import {SiteName} from '@prisma/client'
-import {ApiProperty} from '@nestjs/swagger'
-
-
-
+import { SiteName } from "@prisma/client";
 
 export class CreateSuiviDeFormationDto {
-  @ApiProperty({ enum: SiteName})
-siteName: SiteName;
-tacheName: string;
-progression?: number;
-debutPrevionnel: Date;
-finPrevisionnel: Date;
-nombreDeJours: number;
-debutReel?: Date;
-finReel?: Date;
-perturbation?: number;
-tempsConsommes?: number;
+  siteName: SiteName;
+  tacheName: string;
+  progression?: number;
+  debutPrevionnel: Date;
+  finPrevisionnel: Date;
+  nombreDeJours: number;
+  debutReel?: Date;
+  finReel?: Date;
+  perturbation?: number;
+  tempsConsommes?: number;
 }

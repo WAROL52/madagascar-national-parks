@@ -23,6 +23,7 @@
     "@mui/material": "^5.11.7",
     "@mui/x-data-grid": "^5.17.22",
     "@mui/x-date-pickers": "^5.0.17",
+    "@nestjs/swagger": "^6.2.1",
     "@next/font": "13.1.6",
     "@prisma/client": "^4.10.1",
     "@types/node": "18.11.18",
