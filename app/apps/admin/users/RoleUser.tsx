@@ -17,6 +17,10 @@ export function RoleUser({
   const [roleSelected, setRole] = useState<typeof email.role>(email.role);
   const [siteSelected, setSiteName] = useState<SiteName>(email.siteName);
   const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    setRole(email.role);
+    setSiteName(email.siteName);
+  }, [email]);
   const handlerSave = () => {
     setLoading(true);
     axios

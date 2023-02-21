@@ -18,9 +18,27 @@ export default function AddUser({
 }) {
   const [show, setShow] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isBlurLoading, setBlurLoading] = useState(false);
+  const [isEmailUnique, setEmailUnique] = useState(false);
   const [email, setEmail] = useState("");
   const [roleSelected, setRole] = useState<Role>("Admin");
   const [siteSelected, setSiteName] = useState<SiteName>("aucun");
+  const handlerBlur = () => {
+    if (isEmailValid(email)) {
+      setBlurLoading(true);
+      axios
+        .post("/api/email-handler/find-email", { email })
+        .then(({ data }) => {
+          setBlurLoading(false);
+          const listEmail = data as Email[];
+          if (listEmail.length) {
+            setEmailUnique(false);
+          } else {
+            setEmailUnique(true);
+          }
+        });
+    }
+  };
   const resetAll = () => {
     setEmail("");
     setShow(false);
@@ -62,21 +80,30 @@ export default function AddUser({
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} backdrop="static">
         <Modal.Header closeButton>
           <Modal.Title>Nouvelle Email</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <SaveLoading
+            textLoading="Verification en cours..."
+            isLoading={isBlurLoading && isEmailValid(email)}
+          >
+            {isEmailUnique && isEmailValid(email) && "✔ valide"}
+            {(!isEmailUnique || !isEmailValid(email)) && "❌ invalide"}
+          </SaveLoading>
           <div className="input-group mb-3">
             <span className="input-group-text">Email</span>
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={handlerBlur}
               type="text"
               className="form-control"
               placeholder="Entrer la nouvelle adresse email..."
             />
           </div>
+
           <div className="row">
             <div className="col-md-5">
               <label htmlFor="country" className="form-label">
@@ -131,7 +158,12 @@ export default function AddUser({
           </Button>
           <Button
             variant="primary"
-            disabled={isLoading || !isEmailValid(email)}
+            disabled={
+              isLoading ||
+              !isEmailValid(email) ||
+              !isEmailUnique ||
+              isBlurLoading
+            }
             onClick={handleSave}
           >
             <SaveLoading

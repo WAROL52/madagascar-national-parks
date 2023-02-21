@@ -88,14 +88,24 @@ enum SiteName {
 }
 
 model Email {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt()
-  email         String   @unique
-  passwordToken String?
-  role          Role     @default(Admin)
-  siteName      SiteName @default(aucun)
-  User          User?
+  id                 Int               @id @default(autoincrement())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt()
+  email              String            @unique
+  passwordToken      String?
+  role               Role              @default(Admin)
+  siteName           SiteName          @default(aucun)
+  User               User?
+  suiviFormation     SuiviFormation?   @relation(fields: [suiviFormationId], references: [id])
+  suiviExcecution    SuiviExcecution?  @relation(fields: [suiviExcecutionId], references: [id])
+  suiviFormationId   Int?
+  suiviExcecutionId  Int?
+  SuiviDeFormation   SuiviDeFormation? @relation(fields: [suiviDeFormationId], references: [id])
+  suiviDeFormationId Int?
+
+  @@index([suiviFormationId])
+  @@index([suiviExcecutionId])
+  @@index([suiviDeFormationId])
 }
 
 enum Sexe {
@@ -207,4 +217,94 @@ model Excecution {
   site      Site     @relation(fields: [siteId], references: [id])
   siteId    Int      @unique
   Etape     Etape[]
+}
+
+enum TacheName {
+  aucun
+  ANALYSE_TERROIR_ET_RESTRUCTURATION_DES_CLP
+  ANALYSE_DES_PARTIES_PRENANTES_ET_RESTRUCTURATION_COSAP
+  IDENTIFICATION_LOCALITE_CIBLEet_BENEFICIAIRESet_MICROPROJETet_APPROCHE_GENREet_INDICATEURS
+  IMPACTSet_PGESet_RISQUESet_MGP
+  RESTITUTION_AUX_COMMUNAUTES
+  EVALUATION_PARTICIPATIVE
+}
+
+enum RisqueName {
+  EnBonneVoie
+  RisqueFaible
+  RisqueMoyen
+  RisqueEleve
+}
+
+model SuiviDeFormation {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt()
+  siteName     SiteName
+  tacheName    String
+  risqueProjet RisqueName @default(EnBonneVoie)
+  risqueTache  RisqueName @default(EnBonneVoie)
+
+  progression     Int?     @default(0)
+  debutPrevionnel DateTime
+  finPrevisionnel DateTime
+  nombreDeJours   Int
+
+  debutReel      DateTime?
+  finReel        DateTime?
+  perturbation   Int?      @default(0)
+  tempsConsommes Int?      @default(0)
+
+  Responsables Email[]
+}
+
+model SuiviFormation {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt()
+  siteName     SiteName
+  tacheName    String
+  risqueProjet RisqueName @default(EnBonneVoie)
+  risqueTache  RisqueName @default(EnBonneVoie)
+
+  progression     Int?     @default(0)
+  debutPrevionnel DateTime
+  finPrevisionnel DateTime
+  nombreDeJours   Int
+
+  debutReel      DateTime?
+  finReel        DateTime?
+  perturbation   Int?      @default(0)
+  tempsConsommes Int?      @default(0)
+
+  Responsables Email[]
+}
+
+model SuiviExcecution {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt()
+  siteName     SiteName   @default(aucun)
+  tacheName    TacheName  @default(aucun)
+  risqueProjet RisqueName @default(EnBonneVoie)
+  risqueTache  RisqueName @default(EnBonneVoie)
+
+  progression     Int?     @default(0)
+  debutPrevionnel DateTime
+  finPrevisionnel DateTime
+  nombreDeJours   Int
+
+  debutReel      DateTime
+  finReel        DateTime
+  perturbation   Int?     @default(0)
+  tempsConsommes Int?     @default(0)
+
+  Responsables Email[]
+}
+
+model test {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  nom       String
 }

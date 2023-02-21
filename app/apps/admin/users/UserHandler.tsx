@@ -7,15 +7,40 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { ListGroup } from "react-bootstrap";
 import AddUser from "./AddUser";
+import DeleteUser from "./DeleteUser";
 import { GeneraleInfo } from "./GeneraleInfo";
 import { RoleUser } from "./RoleUser";
 
 export function UserHandler() {
   const [users, setUsers] = useState<Email[]>([]);
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [usersFiltered, setUsersFiltered] = useState<Email[]>([]);
+  const [showModalAddUser, setShowModalAddUser] = useState<boolean>(false);
+  const [showModalDeleteUser, setShowModalDeleteUser] =
+    useState<boolean>(false);
+  const [textFiltered, setTextFiltered] = useState<string>("");
   const [idSelected, setId] = useState<number | null>(null);
   const [userSelected, setUser] = useState<Email | null>(null);
   const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    setUsersFiltered(
+      users.filter((email) => {
+        if (!textFiltered) return true;
+        if (email.email.toLowerCase().includes(textFiltered.toLowerCase()))
+          return true;
+        if (
+          email.User &&
+          email.User.nom.toLowerCase().includes(textFiltered.toLowerCase())
+        )
+          return true;
+        if (
+          email.User &&
+          email.User.prenom.toLowerCase().includes(textFiltered.toLowerCase())
+        )
+          return true;
+        return false;
+      })
+    );
+  }, [textFiltered, users]);
   const addUsers = useCallback(
     (email: Email) => {
       setUsers((oldUsers) => [...oldUsers, email]);
@@ -31,6 +56,14 @@ export function UserHandler() {
           }
           return oldEmail;
         });
+      });
+    },
+    [setUsers]
+  );
+  const deleteUser = useCallback(
+    (email: Email) => {
+      setUsers((oldUsers) => {
+        return oldUsers.filter((oldEmail) => oldEmail.email !== email.email);
       });
     },
     [setUsers]
@@ -51,6 +84,10 @@ export function UserHandler() {
       setUser(null);
     }
   }, [idSelected, users]);
+  const onCloseModalDeleteUser = useCallback(
+    () => setShowModalDeleteUser(false),
+    []
+  );
   return (
     <>
       <div className="app-content flex-column-fluid">
@@ -71,42 +108,14 @@ export function UserHandler() {
                     className="d-flex align-items-center position-relative w-100 m-0"
                     autoComplete="off"
                   >
-                    {/*begin::Icon*/}
-                    {/*begin::Svg Icon | path: icons/duotune/general/gen021.svg*/}
-                    <span className="svg-icon svg-icon-3 svg-icon-gray-500 position-absolute top-50 ms-5 translate-middle-y">
-                      <svg
-                        width={24}
-                        height={24}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <rect
-                          opacity="0.5"
-                          x="17.0365"
-                          y="15.1223"
-                          width="8.15546"
-                          height={2}
-                          rx={1}
-                          transform="rotate(45 17.0365 15.1223)"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </span>
-                    {/*end::Svg Icon*/}
-                    {/*end::Icon*/}
-                    {/*begin::Input*/}
                     <input
                       type="text"
                       className="form-control form-control-solid ps-13"
                       name="search"
-                      placeholder="Search contacts"
+                      placeholder="Recherche d'email..."
+                      value={textFiltered}
+                      onChange={(e) => setTextFiltered(e.target.value)}
                     />
-                    {/*end::Input*/}
                   </form>
                   {/*end::Form*/}
                 </div>
@@ -122,22 +131,23 @@ export function UserHandler() {
                   </SaveLoading>
                   <ListGroup
                     variant="flush"
-                    className="bg-secondary overflow-y"
-                    style={{ height: "300px" }}
+                    style={{ height: "550px", overflowY: "auto" }}
+                    as={"ul"}
                   >
-                    {users.map((user, index) => (
+                    {usersFiltered.map((user, index) => (
                       <ListGroup.Item
                         key={index}
                         action
                         onClick={() => setId(index)}
                         active={index === idSelected}
+                        className="px-0"
                       >
                         <div className="d-flex flex-stack px-0">
                           {/*begin::Details*/}
                           <div className="d-flex align-items-center p-0">
                             {/*begin::Avatar*/}
                             <div className="symbol symbol-40px symbol-circle mx-0">
-                              <span className="border rounded-circle p-3 bg-light-danger text-danger fs-6 fw-bolder">
+                              <span className="border p-2 rounded-circle bg-light-danger text-danger fw-bolder">
                                 {user.role.slice(0, 3)}
                               </span>
                             </div>
@@ -150,7 +160,7 @@ export function UserHandler() {
                               >
                                 {getUserName(user)}
                               </a>
-                              <div className="fw-semibold fs-7 text-muted">
+                              <div className="fw-semibold  text-muted">
                                 {user.email}
                               </div>
                             </div>
@@ -201,41 +211,23 @@ export function UserHandler() {
                   <div className="card-toolbar">
                     {/*begin::Chat*/}
                     <button
-                      onClick={() => setShowModal(true)}
-                      className="btn btn-sm btn-primary "
+                      onClick={() => setShowModalAddUser(true)}
+                      className="btn btn-sm btn-primary mx-3"
                       data-kt-drawer-show="true"
                       data-kt-drawer-target="#kt_drawer_chat"
                     >
                       {/*begin::Svg Icon | path: icons/duotune/communication/com012.svg*/}
                       <span className="svg-icon svg-icon-2">
                         <svg
-                          width={24}
-                          height={24}
-                          viewBox="0 0 24 24"
-                          fill="none"
                           xmlns="http://www.w3.org/2000/svg"
+                          width={20}
+                          height={20}
+                          fill="currentColor"
+                          className="bi bi-person-add"
+                          viewBox="0 0 16 16"
                         >
-                          <path
-                            opacity="0.3"
-                            d="M20 3H4C2.89543 3 2 3.89543 2 5V16C2 17.1046 2.89543 18 4 18H4.5C5.05228 18 5.5 18.4477 5.5 19V21.5052C5.5 22.1441 6.21212 22.5253 6.74376 22.1708L11.4885 19.0077C12.4741 18.3506 13.6321 18 14.8167 18H20C21.1046 18 22 17.1046 22 16V5C22 3.89543 21.1046 3 20 3Z"
-                            fill="currentColor"
-                          />
-                          <rect
-                            x={6}
-                            y={12}
-                            width={7}
-                            height={2}
-                            rx={1}
-                            fill="currentColor"
-                          />
-                          <rect
-                            x={6}
-                            y={7}
-                            width={12}
-                            height={2}
-                            rx={1}
-                            fill="currentColor"
-                          />
+                          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                          <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z" />
                         </svg>
                       </span>
                       {/*end::Svg Icon*/}Nouveau
@@ -245,27 +237,25 @@ export function UserHandler() {
                     {userSelected && (
                       <a
                         href="#"
-                        className="btn btn-sm btn-danger btn-active-light-primary"
+                        className="btn btn-sm btn-danger btn-active-light-primary mx-3"
                         placeholder={
                           "suprimer cette email ?: " + userSelected.email
                         }
+                        onClick={() => setShowModalDeleteUser(true)}
                       >
                         <span className="svg-icon svg-icon-2">
                           <svg
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
+                            width={20}
+                            height={20}
+                            fill="currentColor"
+                            className="bi bi-trash"
+                            viewBox="0 0 16 16"
                           >
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                             <path
-                              opacity="0.3"
-                              d="M8 8C8 7.4 8.4 7 9 7H16V3C16 2.4 15.6 2 15 2H3C2.4 2 2 2.4 2 3V13C2 13.6 2.4 14 3 14H5V16.1C5 16.8 5.79999 17.1 6.29999 16.6L8 14.9V8Z"
-                              fill="currentColor"
-                            />
-                            <path
-                              d="M22 8V18C22 18.6 21.6 19 21 19H19V21.1C19 21.8 18.2 22.1 17.7 21.6L15 18.9H9C8.4 18.9 8 18.5 8 17.9V7.90002C8 7.30002 8.4 6.90002 9 6.90002H21C21.6 7.00002 22 7.4 22 8ZM19 11C19 10.4 18.6 10 18 10H12C11.4 10 11 10.4 11 11C11 11.6 11.4 12 12 12H18C18.6 12 19 11.6 19 11ZM17 15C17 14.4 16.6 14 16 14H12C11.4 14 11 14.4 11 15C11 15.6 11.4 16 12 16H16C16.6 16 17 15.6 17 15Z"
-                              fill="currentColor"
+                              fillRule="evenodd"
+                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
                             />
                           </svg>
                         </span>
@@ -318,7 +308,7 @@ export function UserHandler() {
                           </span>
                           {/*end::Svg Icon*/}
                           <a
-                            href="view-contact.html#"
+                            href={"mailto:" + userSelected.email}
                             className="text-muted text-hover-primary"
                           >
                             {userSelected.email}
@@ -407,25 +397,15 @@ export function UserHandler() {
                           {/*begin::Svg Icon | path: icons/duotune/general/gen014.svg*/}
                           <span className="svg-icon svg-icon-4 me-1">
                             <svg
+                              xmlns="http://www.w3.org/2000/svg"
                               width={24}
                               height={24}
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              className="bi bi-check2-square"
+                              viewBox="0 0 16 16"
                             >
-                              <path
-                                opacity="0.3"
-                                d="M21 22H3C2.4 22 2 21.6 2 21V5C2 4.4 2.4 4 3 4H21C21.6 4 22 4.4 22 5V21C22 21.6 21.6 22 21 22Z"
-                                fill="currentColor"
-                              />
-                              <path
-                                d="M6 6C5.4 6 5 5.6 5 5V3C5 2.4 5.4 2 6 2C6.6 2 7 2.4 7 3V5C7 5.6 6.6 6 6 6ZM11 5V3C11 2.4 10.6 2 10 2C9.4 2 9 2.4 9 3V5C9 5.6 9.4 6 10 6C10.6 6 11 5.6 11 5ZM15 5V3C15 2.4 14.6 2 14 2C13.4 2 13 2.4 13 3V5C13 5.6 13.4 6 14 6C14.6 6 15 5.6 15 5ZM19 5V3C19 2.4 18.6 2 18 2C17.4 2 17 2.4 17 3V5C17 5.6 17.4 6 18 6C18.6 6 19 5.6 19 5Z"
-                                fill="currentColor"
-                              />
-                              <path
-                                d="M8.8 13.1C9.2 13.1 9.5 13 9.7 12.8C9.9 12.6 10.1 12.3 10.1 11.9C10.1 11.6 10 11.3 9.8 11.1C9.6 10.9 9.3 10.8 9 10.8C8.8 10.8 8.59999 10.8 8.39999 10.9C8.19999 11 8.1 11.1 8 11.2C7.9 11.3 7.8 11.4 7.7 11.6C7.6 11.8 7.5 11.9 7.5 12.1C7.5 12.2 7.4 12.2 7.3 12.3C7.2 12.4 7.09999 12.4 6.89999 12.4C6.69999 12.4 6.6 12.3 6.5 12.2C6.4 12.1 6.3 11.9 6.3 11.7C6.3 11.5 6.4 11.3 6.5 11.1C6.6 10.9 6.8 10.7 7 10.5C7.2 10.3 7.49999 10.1 7.89999 10C8.29999 9.90003 8.60001 9.80003 9.10001 9.80003C9.50001 9.80003 9.80001 9.90003 10.1 10C10.4 10.1 10.7 10.3 10.9 10.4C11.1 10.5 11.3 10.8 11.4 11.1C11.5 11.4 11.6 11.6 11.6 11.9C11.6 12.3 11.5 12.6 11.3 12.9C11.1 13.2 10.9 13.5 10.6 13.7C10.9 13.9 11.2 14.1 11.4 14.3C11.6 14.5 11.8 14.7 11.9 15C12 15.3 12.1 15.5 12.1 15.8C12.1 16.2 12 16.5 11.9 16.8C11.8 17.1 11.5 17.4 11.3 17.7C11.1 18 10.7 18.2 10.3 18.3C9.9 18.4 9.5 18.5 9 18.5C8.5 18.5 8.1 18.4 7.7 18.2C7.3 18 7 17.8 6.8 17.6C6.6 17.4 6.4 17.1 6.3 16.8C6.2 16.5 6.10001 16.3 6.10001 16.1C6.10001 15.9 6.2 15.7 6.3 15.6C6.4 15.5 6.6 15.4 6.8 15.4C6.9 15.4 7.00001 15.4 7.10001 15.5C7.20001 15.6 7.3 15.6 7.3 15.7C7.5 16.2 7.7 16.6 8 16.9C8.3 17.2 8.6 17.3 9 17.3C9.2 17.3 9.5 17.2 9.7 17.1C9.9 17 10.1 16.8 10.3 16.6C10.5 16.4 10.5 16.1 10.5 15.8C10.5 15.3 10.4 15 10.1 14.7C9.80001 14.4 9.50001 14.3 9.10001 14.3C9.00001 14.3 8.9 14.3 8.7 14.3C8.5 14.3 8.39999 14.3 8.39999 14.3C8.19999 14.3 7.99999 14.2 7.89999 14.1C7.79999 14 7.7 13.8 7.7 13.7C7.7 13.5 7.79999 13.4 7.89999 13.2C7.99999 13 8.2 13 8.5 13H8.8V13.1ZM15.3 17.5V12.2C14.3 13 13.6 13.3 13.3 13.3C13.1 13.3 13 13.2 12.9 13.1C12.8 13 12.7 12.8 12.7 12.6C12.7 12.4 12.8 12.3 12.9 12.2C13 12.1 13.2 12 13.6 11.8C14.1 11.6 14.5 11.3 14.7 11.1C14.9 10.9 15.2 10.6 15.5 10.3C15.8 10 15.9 9.80003 15.9 9.70003C15.9 9.60003 16.1 9.60004 16.3 9.60004C16.5 9.60004 16.7 9.70003 16.8 9.80003C16.9 9.90003 17 10.2 17 10.5V17.2C17 18 16.7 18.4 16.2 18.4C16 18.4 15.8 18.3 15.6 18.2C15.4 18.1 15.3 17.8 15.3 17.5Z"
-                                fill="currentColor"
-                              />
+                              <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z" />
+                              <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
                             </svg>
                           </span>
                           {/*end::Svg Icon*/}Rôles
@@ -520,10 +500,19 @@ export function UserHandler() {
         {/*end::Content container*/}
       </div>
       <AddUser
-        showModal={showModal}
-        onClose={useCallback(() => setShowModal(false), [])}
+        showModal={showModalAddUser}
+        onClose={useCallback(() => setShowModalAddUser(false), [])}
         addUsers={addUsers}
       />
+
+      {userSelected && (
+        <DeleteUser
+          deleteUsers={deleteUser}
+          onClose={onCloseModalDeleteUser}
+          showModal={showModalDeleteUser}
+          userSelected={userSelected}
+        />
+      )}
     </>
   );
 }
