@@ -4,6 +4,7 @@ import { getAvatarUser } from "@/tools/tools";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
+import LogoutUser from "./LogoutUser";
 type UserType = Partial<{
   email: string;
   motdepasse: string;
@@ -59,9 +60,7 @@ export default function NavTools() {
             <hr className="dropdown-divider" />
           </li>
           <li>
-            <a className="dropdown-item" href="#">
-              Se déconnecter
-            </a>
+            <LogoutUser />
           </li>
         </ul>
       </div>

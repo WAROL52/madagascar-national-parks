@@ -42,7 +42,7 @@ export default function FormLogin() {
   };
   const router = useRouter();
   return (
-    <form className="user" onSubmit={handleSubmit(onSubmit)}>
+    <form className="user" onSubmit={handleSubmit(onSubmit)} method="post">
       {error.hasError && (
         <div className="alert alert-danger" role="alert">
           <h4>{error.title}</h4>

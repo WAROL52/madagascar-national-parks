@@ -1,11 +1,15 @@
 
-
+import {SiteName} from '@prisma/client'
+import {ApiProperty} from '@nestjs/swagger'
 
 
 
 
 export class UpdateSuiviExcecutionDto {
-  progression?: number;
+  @ApiProperty({ enum: SiteName})
+siteName?: SiteName;
+tacheName?: string;
+progression?: number;
 debutPrevionnel?: Date;
 finPrevisionnel?: Date;
 nombreDeJours?: number;

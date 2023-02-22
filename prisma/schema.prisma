@@ -88,24 +88,21 @@ enum SiteName {
 }
 
 model Email {
-  id                 Int               @id @default(autoincrement())
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt()
-  email              String            @unique
-  passwordToken      String?
-  role               Role              @default(Admin)
-  siteName           SiteName          @default(aucun)
-  User               User?
-  suiviFormation     SuiviFormation?   @relation(fields: [suiviFormationId], references: [id])
-  suiviExcecution    SuiviExcecution?  @relation(fields: [suiviExcecutionId], references: [id])
-  suiviFormationId   Int?
-  suiviExcecutionId  Int?
-  SuiviDeFormation   SuiviDeFormation? @relation(fields: [suiviDeFormationId], references: [id])
-  suiviDeFormationId Int?
+  id                Int              @id @default(autoincrement())
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt()
+  email             String           @unique
+  passwordToken     String?
+  role              Role             @default(Admin)
+  siteName          SiteName         @default(aucun)
+  User              User?
+  suiviFormation    SuiviFormation?  @relation(fields: [suiviFormationId], references: [id])
+  suiviExcecution   SuiviExcecution? @relation(fields: [suiviExcecutionId], references: [id])
+  suiviFormationId  Int?
+  suiviExcecutionId Int?
 
   @@index([suiviFormationId])
   @@index([suiviExcecutionId])
-  @@index([suiviDeFormationId])
 }
 
 enum Sexe {
@@ -236,28 +233,6 @@ enum RisqueName {
   RisqueEleve
 }
 
-model SuiviDeFormation {
-  id           Int        @id @default(autoincrement())
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt()
-  siteName     SiteName
-  tacheName    String
-  risqueProjet RisqueName @default(EnBonneVoie)
-  risqueTache  RisqueName @default(EnBonneVoie)
-
-  progression     Int?     @default(0)
-  debutPrevionnel DateTime
-  finPrevisionnel DateTime
-  nombreDeJours   Int
-
-  debutReel      DateTime?
-  finReel        DateTime?
-  perturbation   Int?      @default(0)
-  tempsConsommes Int?      @default(0)
-
-  Responsables Email[]
-}
-
 model SuiviFormation {
   id           Int        @id @default(autoincrement())
   createdAt    DateTime   @default(now())
@@ -284,8 +259,8 @@ model SuiviExcecution {
   id           Int        @id @default(autoincrement())
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt()
-  siteName     SiteName   @default(aucun)
-  tacheName    TacheName  @default(aucun)
+  siteName     SiteName
+  tacheName    String
   risqueProjet RisqueName @default(EnBonneVoie)
   risqueTache  RisqueName @default(EnBonneVoie)
 
@@ -294,17 +269,10 @@ model SuiviExcecution {
   finPrevisionnel DateTime
   nombreDeJours   Int
 
-  debutReel      DateTime
-  finReel        DateTime
-  perturbation   Int?     @default(0)
-  tempsConsommes Int?     @default(0)
+  debutReel      DateTime?
+  finReel        DateTime?
+  perturbation   Int?      @default(0)
+  tempsConsommes Int?      @default(0)
 
   Responsables Email[]
-}
-
-model test {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-  nom       String
 }
