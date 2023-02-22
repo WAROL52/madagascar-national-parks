@@ -1,29 +1,36 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
-import * as React from "react";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import React, { useState, useEffect } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import {
   DataGrid,
   GridRowsProp,
   GridColDef,
   GridToolbar,
+  GridValueSetterParams,
 } from "@mui/x-data-grid";
+import { TextField } from "@mui/material";
+import { getUserCookiesClient } from "@/tools/authClient";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { SuiviFormation } from "@/prisma/dto/suivi-formation/entities/suivi-formation.entity";
 const risque = {
-  "En bonne voie": {
+  EnBonneVoie: {
     title: "En bonne voie",
     value: -3000,
     color: "success",
   },
-  "Risque faible": {
+  RisqueFaible: {
     title: "Risque faible",
     value: 1,
     color: "warning",
   },
-  "Risque moyen": {
+  RisqueMoyen: {
     title: "Risque moyen",
     value: 11,
     color: "warning",
   },
-  "Risque élevé": {
+  RisqueEleve: {
     title: "Risque élevé",
     value: -3000,
     color: "danger",
@@ -39,7 +46,12 @@ const renderRisque: GridColDef["renderCell"] = ({ value }) => {
   if (Object.keys(risque).includes(val)) {
     defaultOption = risque[val];
   }
-  return <div className={` text-bg-${defaultOption.color} p-3`}> {value} </div>;
+  return (
+    <div className={` text-bg-${defaultOption.color} p-3`}>
+      {" "}
+      {defaultOption.title}{" "}
+    </div>
+  );
 };
 const etapes = [
   "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
@@ -48,7 +60,7 @@ const etapes = [
   "IMPACTS, PGES, RISQUES, MGP ",
   "RESTITUTION AUX COMMUNAUTES",
   "EVALUATION PARTICIPATIVE ",
-] as const;
+];
 const renderProgression: GridColDef["renderCell"] = ({ value }) => {
   return (
     <div
@@ -66,35 +78,17 @@ const renderProgression: GridColDef["renderCell"] = ({ value }) => {
     </div>
   );
 };
-const rows: GridRowsProp = etapes.map((etape, index) => {
-  return {
-    id: index,
-    site: "ABT",
-    etape,
-    email: index + "raberolio@gmail.com",
-    risqueProjet: "En bonne voie",
-    risqueTache: "En bonne voie",
-    responsable: "Rabe",
-    progression: 0,
-    debutPrevionnel: new Date(),
-    nombreDeJours: 1,
-    finPrevisionnel: new Date(),
-    debutReel: new Date(),
-    finReel: new Date(),
-    perturbation: 0,
-    tempsConsommes: 0,
-  };
-});
+
 const headerClassName = "text-bg-warning";
 const columns: GridColDef[] = [
   {
-    field: "site",
+    field: "siteName",
     headerName: "Site",
     headerClassName,
     // resizable: true,
     hide: true,
   },
-  { field: "etape", headerName: "Tâche", headerClassName, width: 300 },
+  { field: "tacheName", headerName: "Tâche", headerClassName, width: 300 },
   {
     field: "risqueProjet",
     headerName: "Risque-projet",
@@ -137,10 +131,7 @@ const columns: GridColDef[] = [
     headerClassName,
     // resizable: true,
     width: 150,
-    hide: true,
-    // renderCell() {
-    //   return <div>ss</div>;
-    // },
+    renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
   },
   {
     field: "nombreDeJours",
@@ -154,7 +145,8 @@ const columns: GridColDef[] = [
     headerName: "Fin Previsionnel",
     headerClassName,
     // resizable: true,
-    hide: true,
+    // hide: true,
+    renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
     width: 150,
   },
   {
@@ -171,102 +163,182 @@ const columns: GridColDef[] = [
     // resizable: true,
     width: 150,
   },
-  {
-    field: "debutReel",
-    headerName: "Debut Réel",
-    headerClassName,
-    // resizable: true,
-    width: 125,
-    editable: true,
-    type: "date",
-    valueParser(value, param) {
-      return value;
-    },
-  },
-  {
-    field: "finReel",
-    headerName: "Fin Réel",
-    headerClassName,
-    width: 125,
-    editable: true,
-    type: "date",
-    valueParser(value, param) {
-      return value;
-    },
-  },
 ];
 
 export default function TableExcecution() {
+  const [rows, setRows] = useState<GridRowsProp>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
+  const user = getUserCookiesClient();
+  useEffect(() => {
+    if (user) {
+      setLoading(true);
+      axios
+        .post("/api/tools-suivi/excecution/get-one", user.email)
+        .then(({ data }) => {
+          setRows(
+            data.map((d) => ({
+              ...d,
+              responsable: `${user.nom} ${user.prenom}`,
+              email: user.email.email,
+              debutPrevionnel: new Date(d.debutPrevionnel),
+              finPrevisionnel: new Date(d.finPrevisionnel),
+              debutReel: d.debutReel && new Date(d.debutReel),
+              finReel: d.finReel && new Date(d.finReel),
+            }))
+          );
+          setLoading(false);
+        });
+    } else {
+      router.refresh();
+    }
+  }, []);
+  const columnsDef = [
+    ...columns,
+    {
+      field: "debutReel",
+      headerName: "Debut Réel",
+      headerClassName,
+      // resizable: true,
+      width: 125,
+      editable: true,
+      type: "date",
+      renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
+      // valueGetter: ({ value }) => value && new Date(value),
+      valueParser: (value, param) => {
+        const row = param.row as SuiviFormation;
+        if (row.debutReel) {
+          return new Date(row.debutReel);
+        }
+        axios
+          .post("/api/tools-suivi/excecution/update-debutReel", {
+            email: user.email,
+            debutReel: value,
+            finReel: row.finReel,
+            tacheName: row.tacheName,
+            id: row.id,
+          })
+          .then(({ data }) => {
+            // router.refresh();
+            const newRow = data as SuiviFormation;
+            console.log(value);
+            setRows((_rows) =>
+              _rows.map((rowOld) => {
+                if (rowOld.id === row.id) {
+                  return newRow;
+                }
+                return rowOld;
+              })
+            );
+          });
+
+        return value;
+      },
+    },
+    {
+      field: "finReel",
+      headerName: "Fin Réel",
+      headerClassName,
+      width: 125,
+      editable: true,
+      type: "date",
+      renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
+      // valueGetter: ({ value }) => value && new Date(value),
+      valueParser: (value, param) => {
+        const row = param.row as SuiviFormation;
+        if (!row.debutReel) {
+          return null;
+        }
+        if (row.finReel) {
+          return new Date(row.finReel);
+        }
+        axios
+          .post("/api/tools-suivi/excecution/update-finReel", {
+            email: user.email,
+            debutReel: row.debutReel,
+            finReel: value,
+            tacheName: row.tacheName,
+            id: row.id,
+          })
+          .then(({ data }) => {
+            // router.refresh();
+            const newRow = data as SuiviFormation;
+            console.log(value);
+            setRows((_rows) =>
+              _rows.map((rowOld) => {
+                if (rowOld.id === row.id) {
+                  return newRow;
+                }
+                return rowOld;
+              })
+            );
+          });
+
+        return value;
+      },
+    },
+  ];
+  const rowEnCours =
+    rows.find((row) => row.progression === 0 || row.progression === 50) ||
+    (rows.at(-1) as SuiviFormation);
   return (
     <>
       <div className="bg-dark text-secondary px-1 py-4 text-center">
-        <div className="py-3">
-          <h1 className="display-5 fw-bold text-white">Suivi D'excecution</h1>
-          <div className="col-lg-6 mx-auto">
-            <p className="fs-5 mb-4"></p>
-            {/* <div className="d-none gap-2 d-sm-flex justify-content-sm-center">
-              <button
-                type="button"
-                className="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"
-              >
-                Custom button
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-light btn-lg px-4"
-              >
-                Secondary
-              </button>
-            </div> */}
+        <div className="row text-bg-success">
+          <div className="col-3">
+            <span className="badge text-bg-dark">Responsable :</span>
+            <span>
+              {" "}
+              {user.nom} {user.prenom}
+            </span>
+          </div>
+          <div className="col-6">
+            <span className="badge text-bg-dark "> Tâche en cours :</span>
+            <span
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-custom-class="custom-tooltip"
+              data-bs-title="This top tooltip is themed via CSS variables."
+            >
+              {rowEnCours && rowEnCours.tacheName}
+            </span>
+          </div>
+          <div className="col-3">
+            <span className="badge text-bg-dark"> Risque-projet :</span>
+            <span>En bonne voie</span>
           </div>
         </div>
-      </div>
-      <div className="row text-bg-success">
-        <div className="col-3">
-          <span className="badge text-bg-dark">Responsable :</span>
-          <span>Rabe</span>
-        </div>
-        <div className="col-6">
-          <span className="badge text-bg-dark "> Tâche en cours :</span>
-          <span
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-custom-class="custom-tooltip"
-            data-bs-title="This top tooltip is themed via CSS variables."
-          >
-            {etapes.at(0)}
-          </span>
-        </div>
-        <div className="col-3">
-          <span className="badge text-bg-dark"> Risque-projet :</span>
-          <span>En bonne voie</span>
-        </div>
-      </div>
-      <div className="row text-bg-success">
-        <div className="col-3">
-          <span className="badge text-bg-dark">Site :</span>
-          <span>ABT</span>
-        </div>
-        <div className="col-6">
-          <span className="badge text-bg-dark ">Debut Previonnel :</span>
-          <span
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-custom-class="custom-tooltip"
-            data-bs-title="This top tooltip is themed via CSS variables."
-          >
-            02/06/2023
-          </span>
-        </div>
-        <div className="col-3">
-          <span className="badge text-bg-dark"> Fin Previsionnel:</span>
-          <span>02/06/2023</span>
+        <div className="row text-bg-success">
+          <div className="col-3">
+            <span className="badge text-bg-dark">Site :</span>
+            <span>{rowEnCours && rowEnCours.siteName}</span>
+          </div>
+          <div className="col-6">
+            <span className="badge text-bg-dark ">Debut Previonnel :</span>
+            <span
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-custom-class="custom-tooltip"
+              data-bs-title="This top tooltip is themed via CSS variables."
+            >
+              {rowEnCours &&
+                new Date(rowEnCours.debutPrevionnel).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="col-3">
+            <span className="badge text-bg-dark"> Fin Previsionnel:</span>
+            <span>
+              {rowEnCours &&
+                new Date(rowEnCours.finPrevisionnel).toLocaleDateString()}
+            </span>
+          </div>
         </div>
       </div>
       <div style={{ height: 500, width: "100%" }} className="shadow mb-3">
         <DataGrid
           rows={rows}
-          columns={columns}
+          // @ts-ignore
+          columns={columnsDef}
           components={{
             Toolbar: () => (
               <>
@@ -276,6 +348,7 @@ export default function TableExcecution() {
               </>
             ),
           }}
+          loading={isLoading}
         />
       </div>
     </>

@@ -134,59 +134,66 @@ export default function layout({
                     </span>
                     {/*end::Text*/}
                     {/*begin::Info*/}
-                    <div className="d-flex align-items-center flex-wrap fw-semibold fs-7 pe-2">
-                      <a
-                        href="#"
-                        className="d-flex align-items-center text-gray-400 text-hover-primary"
-                      >
-                        lien1
-                      </a>
-                      <span className="bullet bullet-dot h-5px w-5px bg-gray-400 mx-3" />
-                      <a
-                        href="#"
-                        className="d-flex align-items-center text-gray-400 text-hover-primary"
-                      >
-                        lien 2
-                      </a>
-                      <span className="bullet bullet-dot h-5px w-5px bg-gray-400 mx-3" />
-                      <a href="#" className="text-gray-400 text-hover-primary">
-                        3,450 Followers
-                      </a>
-                    </div>
+                    {user.email.role !== "ResponsableSite" && (
+                      <div className="d-flex align-items-center flex-wrap fw-semibold fs-7 pe-2">
+                        <a
+                          href="#"
+                          className="d-flex align-items-center text-gray-400 text-hover-primary"
+                        >
+                          lien1
+                        </a>
+                        <span className="bullet bullet-dot h-5px w-5px bg-gray-400 mx-3" />
+                        <a
+                          href="#"
+                          className="d-flex align-items-center text-gray-400 text-hover-primary"
+                        >
+                          lien 2
+                        </a>
+                        <span className="bullet bullet-dot h-5px w-5px bg-gray-400 mx-3" />
+                        <a
+                          href="#"
+                          className="text-gray-400 text-hover-primary"
+                        >
+                          3,450 Followers
+                        </a>
+                      </div>
+                    )}
                     {/*end::Info*/}
                   </div>
                   {/*end::User*/}
                   {/*begin::Actions*/}
-                  <div className="d-flex">
-                    <a
-                      href="#"
-                      className="btn btn-sm btn-light me-3 active"
-                      id="kt_drawer_chat_toggle"
-                    >
-                      Génerale
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-sm btn-light me-3"
-                      id="kt_drawer_chat_toggle"
-                    >
-                      Option1
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-sm btn-light me-3"
-                      id="kt_drawer_chat_toggle"
-                    >
-                      Option1
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-sm btn-light me-3"
-                      id="kt_drawer_chat_toggle"
-                    >
-                      Option1
-                    </a>
-                  </div>
+                  {user.email.role !== "ResponsableSite" && (
+                    <div className="d-flex">
+                      <a
+                        href="#"
+                        className="btn btn-sm btn-light me-3 active"
+                        id="kt_drawer_chat_toggle"
+                      >
+                        Génerale
+                      </a>
+                      <a
+                        href="#"
+                        className="btn btn-sm btn-light me-3"
+                        id="kt_drawer_chat_toggle"
+                      >
+                        Option1
+                      </a>
+                      <a
+                        href="#"
+                        className="btn btn-sm btn-light me-3"
+                        id="kt_drawer_chat_toggle"
+                      >
+                        Option1
+                      </a>
+                      <a
+                        href="#"
+                        className="btn btn-sm btn-light me-3"
+                        id="kt_drawer_chat_toggle"
+                      >
+                        Option1
+                      </a>
+                    </div>
+                  )}
                   {/*end::Actions*/}
                 </div>
                 {/*end::Info*/}

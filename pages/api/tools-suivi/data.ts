@@ -89,12 +89,12 @@ export default async function handler(
   console.log(req.body);
   const prisma = new PrismaClient();
   const siteName = Object.keys(SiteName);
-  // const suivi = await prisma.suiviFormation.deleteMany();
+  // const suivi = await prisma.suiviExcecution.deleteMany();
   const suivi = [];
-  for (let index = 0; index < tachesFormation.length; index++) {
-    const tache = tachesFormation[index];
+  for (let index = 0; index < tachesExcecution.length; index++) {
+    const tache = tachesExcecution[index];
     suivi.push(
-      await prisma.suiviFormation.createMany({
+      await prisma.suiviExcecution.createMany({
         data: siteName.map((name) => {
           return {
             debutPrevionnel: tache.debutPrevionnel,

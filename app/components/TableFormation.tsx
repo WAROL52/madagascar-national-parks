@@ -219,22 +219,16 @@ export default function TableFormation() {
             id: row.id,
           })
           .then(({ data }) => {
-            console.log("refreshing forced...");
             // router.refresh();
             const newRow = data as SuiviFormation;
-            console.log(value);
             setRows((_rows) =>
               _rows.map((rowOld) => {
                 if (rowOld.id === row.id) {
-                  console.log("---------------------");
-                  console.log(rowOld, newRow);
-                  console.log("---------------------");
                   return newRow;
                 }
                 return rowOld;
               })
             );
-            console.log("refreshing finished...");
           });
 
         return value;
@@ -266,22 +260,17 @@ export default function TableFormation() {
             id: row.id,
           })
           .then(({ data }) => {
-            console.log("refreshing forced...");
             // router.refresh();
             const newRow = data as SuiviFormation;
             console.log(value);
             setRows((_rows) =>
               _rows.map((rowOld) => {
                 if (rowOld.id === row.id) {
-                  console.log("---------------------");
-                  console.log(rowOld, newRow);
-                  console.log("---------------------");
                   return newRow;
                 }
                 return rowOld;
               })
             );
-            console.log("refreshing finished...");
           });
 
         return value;
@@ -294,74 +283,54 @@ export default function TableFormation() {
   return (
     <>
       <div className="bg-dark text-secondary px-1 py-4 text-center">
-        <div className="py-3">
-          <h1 className="display-5 fw-bold text-white">Suivi De Formation</h1>
-          <div className="col-lg-6 mx-auto">
-            <p className="fs-5 mb-4"></p>
-            {/* <div className="d-none gap-2 d-sm-flex justify-content-sm-center">
-              <button
-                type="button"
-                className="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"
-              >
-                Custom button
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-light btn-lg px-4"
-              >
-                Secondary
-              </button>
-            </div> */}
+        <div className="row text-bg-success">
+          <div className="col-3">
+            <span className="badge text-bg-dark">Responsable :</span>
+            <span>
+              {" "}
+              {user.nom} {user.prenom}
+            </span>
+          </div>
+          <div className="col-6">
+            <span className="badge text-bg-dark "> Tâche en cours :</span>
+            <span
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-custom-class="custom-tooltip"
+              data-bs-title="This top tooltip is themed via CSS variables."
+            >
+              {rowEnCours && rowEnCours.tacheName}
+            </span>
+          </div>
+          <div className="col-3">
+            <span className="badge text-bg-dark"> Risque-projet :</span>
+            <span>En bonne voie</span>
           </div>
         </div>
-      </div>
-      <div className="row text-bg-success">
-        <div className="col-3">
-          <span className="badge text-bg-dark">Responsable :</span>
-          <span>
-            {" "}
-            {user.nom} {user.prenom}
-          </span>
-        </div>
-        <div className="col-6">
-          <span className="badge text-bg-dark "> Tâche en cours :</span>
-          <span
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-custom-class="custom-tooltip"
-            data-bs-title="This top tooltip is themed via CSS variables."
-          >
-            {rowEnCours && rowEnCours.tacheName}
-          </span>
-        </div>
-        <div className="col-3">
-          <span className="badge text-bg-dark"> Risque-projet :</span>
-          <span>En bonne voie</span>
-        </div>
-      </div>
-      <div className="row text-bg-success">
-        <div className="col-3">
-          <span className="badge text-bg-dark">Site :</span>
-          <span>{rowEnCours && rowEnCours.siteName}</span>
-        </div>
-        <div className="col-6">
-          <span className="badge text-bg-dark ">Debut Previonnel :</span>
-          <span
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-custom-class="custom-tooltip"
-            data-bs-title="This top tooltip is themed via CSS variables."
-          >
-            {rowEnCours &&
-              new Date(rowEnCours.debutPrevionnel).toLocaleDateString()}
-          </span>
-        </div>
-        <div className="col-3">
-          <span className="badge text-bg-dark"> Fin Previsionnel:</span>
-          <span>
-            {rowEnCours &&
-              new Date(rowEnCours.finPrevisionnel).toLocaleDateString()}
-          </span>
+        <div className="row text-bg-success">
+          <div className="col-3">
+            <span className="badge text-bg-dark">Site :</span>
+            <span>{rowEnCours && rowEnCours.siteName}</span>
+          </div>
+          <div className="col-6">
+            <span className="badge text-bg-dark ">Debut Previonnel :</span>
+            <span
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-custom-class="custom-tooltip"
+              data-bs-title="This top tooltip is themed via CSS variables."
+            >
+              {rowEnCours &&
+                new Date(rowEnCours.debutPrevionnel).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="col-3">
+            <span className="badge text-bg-dark"> Fin Previsionnel:</span>
+            <span>
+              {rowEnCours &&
+                new Date(rowEnCours.finPrevisionnel).toLocaleDateString()}
+            </span>
+          </div>
         </div>
       </div>
       <div style={{ height: 500, width: "100%" }} className="shadow mb-3">
