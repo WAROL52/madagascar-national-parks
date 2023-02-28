@@ -13,7 +13,6 @@ import { TextField } from "@mui/material";
 import { getUserCookiesClient } from "@/tools/authClient";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { SuiviFormation } from "@/prisma/dto/suivi-formation/entities/suivi-formation.entity";
 import { ProjetName } from "@prisma/client";
 import {
   getSuiviDeProjetOfUserClient,
