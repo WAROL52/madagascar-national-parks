@@ -8,6 +8,7 @@ export default function LogoutUser() {
   const handlerLogout = () => {
     Cookies.remove("user");
     router.push("/login");
+    router.refresh();
   };
   return (
     <a className="dropdown-item" href="#" onClick={handlerLogout}>
