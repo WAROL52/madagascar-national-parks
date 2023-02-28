@@ -25,7 +25,6 @@ export default async function handler(
         User: {
           include: {
             email: true,
-            ResponsableSite: true,
           },
         },
       },
