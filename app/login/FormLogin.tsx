@@ -36,7 +36,7 @@ export default function FormLogin() {
       });
     }
     setUserCookiesClient(dataRes);
-    setLoading(false);
+    // setLoading(false);
     router.refresh();
     return router.push(`/apps/user/${dataRes.id}/apercue`);
   };

@@ -1,8 +1,6 @@
 
 import {Role,SiteName} from '@prisma/client'
 import {User} from '../../user/entities/user.entity'
-import {SuiviFormation} from '../../suivi-formation/entities/suivi-formation.entity'
-import {SuiviExcecution} from '../../suivi-excecution/entities/suivi-excecution.entity'
 
 
 export class Email {
@@ -10,12 +8,7 @@ export class Email {
 createdAt: Date ;
 updatedAt: Date ;
 email: string ;
-passwordToken: string  | null;
 role: Role ;
 siteName: SiteName ;
 User?: User  | null;
-suiviFormation?: SuiviFormation  | null;
-suiviExcecution?: SuiviExcecution  | null;
-suiviFormationId: number  | null;
-suiviExcecutionId: number  | null;
 }

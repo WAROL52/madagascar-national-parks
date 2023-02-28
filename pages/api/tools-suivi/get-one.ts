@@ -10,11 +10,8 @@ export default async function handler(
   if (req.method === "POST") {
     const prisma = new PrismaClient();
     const data = req.body as Email;
-    const responseData = await prisma.suiviFormation.findMany({
+    const responseData = await prisma.suiviDeProjet.findMany({
       where: { siteName: data.siteName },
-      include: {
-        Responsables: true,
-      },
     });
     return res.status(200).json(responseData);
   }
