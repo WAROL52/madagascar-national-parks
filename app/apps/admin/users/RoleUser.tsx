@@ -4,6 +4,7 @@ import { Site } from "@/prisma/dto/site/entities/site.entity";
 import { User } from "@/prisma/dto/user/entities/user.entity";
 import { Role, SiteName } from "@prisma/client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 
@@ -17,6 +18,7 @@ export function RoleUser({
   const [roleSelected, setRole] = useState<typeof email.role>(email.role);
   const [siteSelected, setSiteName] = useState<SiteName>(email.siteName);
   const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     setRole(email.role);
     setSiteName(email.siteName);
@@ -30,8 +32,9 @@ export function RoleUser({
         siteName: siteSelected,
       })
       .then(({ data }) => {
-        setLoading(false);
         updateUser(data as Email);
+        router.refresh();
+        setLoading(false);
       });
   };
   useEffect(() => {
