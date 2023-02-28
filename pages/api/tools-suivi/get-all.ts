@@ -7,6 +7,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const prisma = new PrismaClient();
-  const suivi = await prisma.suiviFormation.findMany();
+  const suivi = await prisma.suiviDeProjet.findMany();
   return res.status(200).json(suivi);
 }
