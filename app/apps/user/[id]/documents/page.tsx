@@ -5,7 +5,10 @@ export default function page() {
   return (
     <>
       <div className="p-3" style={{ height: "500px" }}>
-        <AppFileBrowser />
+        <form method="POST" action="/api/upload" encType="multipart/form-data">
+          <input type="file" name="file" />
+          <button type="submit">Upload File</button>
+        </form>
       </div>
     </>
   );
