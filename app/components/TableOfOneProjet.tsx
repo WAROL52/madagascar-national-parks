@@ -23,22 +23,22 @@ import {
   updateFinReelOfProjet,
 } from "@/tools/SuiviDeProjetHandler";
 const risque = {
-  EnBonneVoie: {
+  "En bonne voie": {
     title: "En bonne voie",
     value: -3000,
     color: "success",
   },
-  RisqueFaible: {
+  "Risque faible": {
     title: "Risque faible",
     value: 1,
     color: "warning",
   },
-  RisqueMoyen: {
+  "Risque moyen": {
     title: "Risque moyen",
     value: 11,
     color: "warning",
   },
-  RisqueEleve: {
+  "Risque élevé": {
     title: "Risque élevé",
     value: -3000,
     color: "danger",
@@ -88,7 +88,7 @@ const renderProgression: GridColDef["renderCell"] = ({ value }) => {
 };
 
 const headerClassName = "text-bg-warning";
-const columns: GridColDef[] = [
+const columnsPart1: GridColDef[] = [
   {
     field: "siteName",
     headerName: "Site",
@@ -96,7 +96,7 @@ const columns: GridColDef[] = [
     // resizable: true,
     hide: true,
   },
-  { field: "tacheName", headerName: "Tâche", headerClassName, width: 300 },
+  { field: "tacheName", headerName: "Tâche", headerClassName, width: 225 },
   {
     field: "risqueProjet",
     headerName: "Risque-projet",
@@ -108,7 +108,7 @@ const columns: GridColDef[] = [
     renderCell: renderRisque,
   },
   {
-    field: "risqueTache",
+    field: "risque",
     headerName: "Risque-tache",
     headerClassName,
     // resizable: true,
@@ -134,20 +134,14 @@ const columns: GridColDef[] = [
     renderCell: renderProgression,
   },
   {
-    field: "debutPrevionnel",
+    field: "debutPrevisionnel",
     headerName: "Debut Previonnel",
     headerClassName,
     // resizable: true,
-    width: 150,
+    width: 125,
     renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
   },
-  {
-    field: "nombreDeJours",
-    headerName: "Nombre De Jours",
-    headerClassName,
-    // resizable: true,
-    width: 150,
-  },
+
   {
     field: "finPrevisionnel",
     headerName: "Fin Previsionnel",
@@ -155,15 +149,17 @@ const columns: GridColDef[] = [
     // resizable: true,
     // hide: true,
     renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
-    width: 150,
-  },
-  {
-    field: "perturbation",
-    headerName: "Perturbation",
-    headerClassName,
-    // resizable: true,
     width: 125,
   },
+  {
+    field: "nombreDeJours",
+    headerName: "Jours",
+    headerClassName,
+    // resizable: true,
+    width: 50,
+  },
+];
+const columnsPart2: GridColDef[] = [
   {
     field: "tempsConsommes",
     headerName: "Temps Consommes",
@@ -171,8 +167,21 @@ const columns: GridColDef[] = [
     // resizable: true,
     width: 150,
   },
+  {
+    field: "retard",
+    headerName: "Retard",
+    headerClassName,
+    // resizable: true,
+    width: 75,
+    renderCell: ({ value }) => (
+      <span
+        className={value > 0 ? "text-danger" : value < 0 ? "text-success" : ""}
+      >
+        {value}
+      </span>
+    ),
+  },
 ];
-
 export default function TableOfOneProjet({
   projetName,
 }: {
@@ -182,7 +191,7 @@ export default function TableOfOneProjet({
   const router = useRouter();
   const [suiviDeProjets, setSuiviDeProjets] =
     useState<ProjetOfUserClientInterface>(null);
-  const projets = suiviDeProjets[projetName];
+  const projets = suiviDeProjets?.[projetName] || [];
   const [isLoading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     if (user) {
@@ -197,7 +206,7 @@ export default function TableOfOneProjet({
     } else {
       router.refresh();
     }
-  }, [user, router]);
+  }, []);
   const updateDebutReelOrFinReel = (
     type: "debutReel" | "finReel",
     projet: ProjetParsedInterface,
@@ -217,13 +226,13 @@ export default function TableOfOneProjet({
     );
   };
   const columnsDef = [
-    ...columns,
+    ...columnsPart1,
     {
       field: "debutReel",
       headerName: "Debut Réel",
       headerClassName,
       // resizable: true,
-      width: 125,
+      width: 100,
       editable: true,
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
@@ -244,7 +253,7 @@ export default function TableOfOneProjet({
       field: "finReel",
       headerName: "Fin Réel",
       headerClassName,
-      width: 125,
+      width: 100,
       editable: true,
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
@@ -262,6 +271,7 @@ export default function TableOfOneProjet({
         return value;
       },
     },
+    ...columnsPart2,
   ];
   const rowEnCours = suiviDeProjets?.projetSelected;
   return (

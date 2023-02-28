@@ -4,7 +4,11 @@ import moment from "moment";
 import { AxiosService } from "./axiosService";
 export const NOMBRE_DE_JOURS_TOTAL_OF_SUIVIDEPROJET = 150;
 export const COEFFICIENT_DE_RISQUE_OF_SUIVIDEPROJET = 2;
-export type RisqueType = "";
+export type RisqueType =
+  | "En bonne voie"
+  | "Risque faible"
+  | "Risque moyen"
+  | "Risque élevé";
 export interface RisquePropsInterface {
   nombreDeJours: number;
   tempsConsommes: number;
@@ -36,14 +40,17 @@ export interface ProjetOfUserClientInterface extends RisquePropsInterface {
   projetSelected: ProjetParsedInterface;
 }
 export function evaluateValueOfRisque(valueOfRisque: number): RisqueType {
-  return "";
+  if (valueOfRisque <= 25) return "En bonne voie";
+  if (valueOfRisque <= 50) return "Risque faible";
+  if (valueOfRisque <= 75) return "Risque moyen";
+  return "Risque élevé";
 }
 export function parseRisque(
   nombreDeJours: RisquePropsInterface["nombreDeJours"],
   tempsConsommes: RisquePropsInterface["tempsConsommes"],
   coefficientDeRisque: RisquePropsInterface["coefficientDeRisque"]
 ): RisquePropsInterface {
-  const retard = nombreDeJours - tempsConsommes;
+  const retard = tempsConsommes - nombreDeJours;
   const risqueValue = (retard * 100) / nombreDeJours;
   return {
     coefficientDeRisque,
@@ -58,22 +65,28 @@ export function parseProjet(projet: SuiviDeProjet): ProjetParsedInterface {
   projet.debutPrevisionnel = new Date(projet.debutPrevisionnel);
   projet.finPrevisionnel = new Date(projet.finPrevisionnel);
 
-  projet.finPrevisionnel = projet.finReel && new Date(projet.finReel);
-  projet.finPrevisionnel = projet.debutReel && new Date(projet.debutReel);
+  projet.finReel = projet.finReel && new Date(projet.finReel);
+  projet.debutReel = projet.debutReel && new Date(projet.debutReel);
 
   const nombreDeJours =
     moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
-  let tempsConsommes = moment(projet.finReel || new Date()).diff(
-    projet.debutReel || new Date(),
-    "days"
-  );
-  if (tempsConsommes < 0) tempsConsommes = 0;
+  let tempsConsommes =
+    moment(projet.finReel || new Date()).diff(
+      projet.debutReel || new Date(),
+      "days"
+    ) + 1;
+  if (tempsConsommes < 0 || (!projet.finReel && !projet.debutReel)) {
+    tempsConsommes = 0;
+  }
   const coefficientDeRisque = 1;
   const risqueParsed = parseRisque(
     nombreDeJours,
     tempsConsommes,
     coefficientDeRisque
   );
+  if (!projet.finReel && !projet.debutReel) {
+    risqueParsed.retard = 0;
+  }
   return {
     ...projet,
     ...risqueParsed,

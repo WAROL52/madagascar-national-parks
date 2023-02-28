@@ -44,7 +44,6 @@ export default async function handler(
       const resEmail = await prisma.email.update({
         where: { email },
         data: {
-          passwordToken: faker.internet.password(20),
           User: {
             create: {
               nom,

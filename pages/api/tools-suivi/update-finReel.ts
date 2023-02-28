@@ -18,24 +18,11 @@ export default async function handler(
       finReel: string | Date;
       debutReel: string | Date;
     };
-    console.log(data.finReel);
-    const progression = data.debutReel && data.finReel ? 100 : 50;
     const finReel = new Date(data.finReel);
-    const debutReel = new Date(data.debutReel);
-    const tempsConsommes = moment(finReel).diff(debutReel, "days");
-    const nombreDeJours = 1;
-    const perturbation =
-      tempsConsommes - nombreDeJours < 0 ? 0 : tempsConsommes - nombreDeJours;
-    const email = await prisma.suiviFormation.update({
+    const email = await prisma.suiviDeProjet.update({
       where: { id: data.id },
       data: {
         finReel,
-        progression,
-        tempsConsommes,
-        perturbation,
-      },
-      include: {
-        Responsables: true,
       },
     });
     console.log(email);

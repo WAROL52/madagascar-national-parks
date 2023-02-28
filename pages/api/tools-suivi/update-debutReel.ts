@@ -17,19 +17,12 @@ export default async function handler(
       debutReel: string | Date;
       finReel: string | Date | null;
     };
-    console.log(data.debutReel);
-    const progression = data.debutReel && data.finReel ? 100 : 50;
-    const email = await prisma.suiviFormation.update({
+    const email = await prisma.suiviDeProjet.update({
       where: { id: data.id },
       data: {
         debutReel: new Date(data.debutReel),
-        progression,
-      },
-      include: {
-        Responsables: true,
       },
     });
-    console.log(email);
     return res.status(200).json(email);
   }
   //   res.status(200).json({ name: "John Doe" });
