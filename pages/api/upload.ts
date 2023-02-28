@@ -4,7 +4,7 @@ import cors from "cors";
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     console.log(file);
-    cb(null, "files/");
+    cb(null, "/app/files/");
   },
   filename: function (req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}-${file.originalname}`);
