@@ -94,18 +94,14 @@ export default async function handler(
   for (let index = 0; index < tachesExcecution.length; index++) {
     const tache = tachesExcecution[index];
     suivi.push(
-      await prisma.suiviExcecution.createMany({
+      await prisma.suiviDeProjet.createMany({
         data: siteName.map((name) => {
           return {
-            debutPrevionnel: tache.debutPrevionnel,
+            debutPrevisionnel: tache.debutPrevionnel,
             finPrevisionnel: tache.finPrevisionnel,
-            nombreDeJours:
-              moment(tache.finPrevisionnel).diff(
-                tache.debutPrevionnel,
-                "days"
-              ) + 1,
-            siteName: name as SiteName,
+            // siteName: name as SiteName,
             tacheName: tache.tacheName,
+            projetName: "formation",
           };
         }),
       })
