@@ -22,7 +22,6 @@ export default async function handler(
       },
       include: {
         email: true,
-        ResponsableSite: true,
       },
     });
     return res.status(200).json(user);
