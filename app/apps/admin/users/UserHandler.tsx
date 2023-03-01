@@ -3,9 +3,10 @@ import SaveLoading from "@/app/components/SaveLoading";
 import { Email } from "@/prisma/dto/email/entities/email.entity";
 import { User } from "@/prisma/dto/user/entities/user.entity";
 import { getAvatarUser } from "@/tools/tools";
+import { Role, SiteName } from "@prisma/client";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Nav } from "react-bootstrap";
 import AddUser from "./AddUser";
 import DeleteUser from "./DeleteUser";
 import { GeneraleInfo } from "./GeneraleInfo";
@@ -15,6 +16,7 @@ export function UserHandler() {
   const [users, setUsers] = useState<Email[]>([]);
   const [usersFiltered, setUsersFiltered] = useState<Email[]>([]);
   const [showModalAddUser, setShowModalAddUser] = useState<boolean>(false);
+  const [filter, setFilter] = useState<Role | "">("");
   const [showModalDeleteUser, setShowModalDeleteUser] =
     useState<boolean>(false);
   const [textFiltered, setTextFiltered] = useState<string>("");
@@ -117,6 +119,27 @@ export function UserHandler() {
                       onChange={(e) => setTextFiltered(e.target.value)}
                     />
                   </form>
+                  <Nav
+                    activeKey={filter}
+                    onSelect={(selectedKey: Role | "") =>
+                      setFilter(selectedKey)
+                    }
+                    variant="tabs"
+                    className="mt-2"
+                  >
+                    <Nav.Item>
+                      <Nav.Link eventKey="">All</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="ResponsableSite">Res</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="Admin">Adm</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link eventKey="SuperAdmin">Sup</Nav.Link>
+                    </Nav.Item>
+                  </Nav>
                   {/*end::Form*/}
                 </div>
                 {/*end::Card header*/}
@@ -134,42 +157,48 @@ export function UserHandler() {
                     style={{ height: "550px", overflowY: "auto" }}
                     as={"ul"}
                   >
-                    {usersFiltered.map((user, index) => (
-                      <ListGroup.Item
-                        key={index}
-                        action
-                        onClick={() => setId(index)}
-                        active={index === idSelected}
-                        className="px-0"
-                      >
-                        <div className="d-flex flex-stack px-0">
-                          {/*begin::Details*/}
-                          <div className="d-flex align-items-center p-0">
-                            {/*begin::Avatar*/}
-                            <div className="symbol symbol-40px symbol-circle mx-0">
-                              <span className="border p-2 rounded-circle bg-light-danger text-danger fw-bolder">
-                                {user.role.slice(0, 3)}
-                              </span>
-                            </div>
-                            {/*end::Avatar*/}
+                    {usersFiltered
+                      .filter((user) => {
+                        if (filter == "") return true;
+                        if (user.role === filter) return true;
+                        return false;
+                      })
+                      .map((user, index) => (
+                        <ListGroup.Item
+                          key={index}
+                          action
+                          onClick={() => setId(index)}
+                          active={index === idSelected}
+                          className="px-0"
+                        >
+                          <div className="d-flex flex-stack px-0">
                             {/*begin::Details*/}
-                            <div className=" mx-0">
-                              <a
-                                href="view-contact.html"
-                                className="fs-6 fw-bold link-warning mb-2"
-                              >
-                                {getUserName(user)}
-                              </a>
-                              <div className="fw-semibold  text-muted">
-                                {user.email}
+                            <div className="d-flex align-items-center p-0">
+                              {/*begin::Avatar*/}
+                              <div className="symbol symbol-40px symbol-circle mx-0">
+                                <span className="border p-2 rounded-circle bg-light-danger text-danger fw-bolder">
+                                  {user.role.slice(0, 3)}
+                                </span>
                               </div>
+                              {/*end::Avatar*/}
+                              {/*begin::Details*/}
+                              <div className=" mx-0">
+                                <a
+                                  href="view-contact.html"
+                                  className="fs-6 fw-bold link-warning mb-2"
+                                >
+                                  {getUserName(user)}
+                                </a>
+                                <div className="fw-semibold  text-muted">
+                                  {user.email}
+                                </div>
+                              </div>
+                              {/*end::Details*/}
                             </div>
                             {/*end::Details*/}
                           </div>
-                          {/*end::Details*/}
-                        </div>
-                      </ListGroup.Item>
-                    ))}
+                        </ListGroup.Item>
+                      ))}
                   </ListGroup>
 
                   {/*end::List*/}

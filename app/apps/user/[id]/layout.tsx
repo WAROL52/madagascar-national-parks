@@ -9,26 +9,32 @@ const menus = [
   {
     url: "apercue",
     title: "Vue d'ensemble",
+    role: "",
   },
   {
     url: "sp_formation",
     title: "SP. Formation",
+    role: "ResponsableSite",
   },
   {
     url: "sp_excecution",
     title: "SP. Excecution",
+    role: "ResponsableSite",
   },
   {
     url: "documents",
     title: "Documents",
+    role: "",
   },
   {
     url: "parametres",
     title: "Paramètres",
+    role: "",
   },
   {
     url: "activite",
     title: "Activité",
+    role: "",
   },
 ];
 export default function layout({
@@ -218,11 +224,19 @@ export default function layout({
           >
             {/*begin::Nav*/}
             <ul className="nav flex-wrap border-transparent ">
-              {menus.map((menu) => (
-                <li key={menu.url} className="nav-item my-1">
-                  <MenuOfUser menu={menu} params={params} />
-                </li>
-              ))}
+              {menus.map((menu) => {
+                if (
+                  user.email.role !== "ResponsableSite" &&
+                  menu.role == "ResponsableSite"
+                ) {
+                  return;
+                }
+                return (
+                  <li key={menu.url} className="nav-item my-1">
+                    <MenuOfUser menu={menu} params={params} />
+                  </li>
+                );
+              })}
             </ul>
             {/*end::Nav*/}
           </div>

@@ -1,5 +1,6 @@
 import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
 import React from "react";
+import DeleteFileStructure from "./DeleteFileStructure";
 
 export default function FileStructure({
   folder,
@@ -38,9 +39,7 @@ export default function FileStructure({
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <a className="dropdown-item link-danger" href="#">
-                        Suprimer
-                      </a>
+                      <DeleteFileStructure />
                     </li>
                   </div>
                 </ul>
