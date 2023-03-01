@@ -46,11 +46,29 @@ export function evaluateValueOfRisque(valueOfRisque: number): RisqueType {
   return "Risque élevé";
 }
 export function parseRisque(
-  nombreDeJours: RisquePropsInterface["nombreDeJours"],
-  tempsConsommes: RisquePropsInterface["tempsConsommes"],
+  projet: SuiviDeProjet,
   coefficientDeRisque: RisquePropsInterface["coefficientDeRisque"]
 ): RisquePropsInterface {
-  const retard = tempsConsommes - nombreDeJours;
+  projet.debutReel = projet.debutReel && new Date(projet.debutReel);
+  projet.finReel = projet.finReel && new Date(projet.finReel);
+  projet.debutPrevisionnel = new Date(projet.debutPrevisionnel);
+  projet.finPrevisionnel = new Date(projet.debutReel);
+  const nombreDeJours =
+    moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
+
+  let retard = 0;
+  let tempsConsommes =
+    moment(projet.finReel || projet.debutReel || new Date()).diff(
+      projet.debutReel,
+      "days"
+    ) + 1;
+
+  const dateFin = projet.finReel || projet.debutReel || new Date();
+  let days = moment(dateFin).diff(projet.finPrevisionnel, "days");
+  if (days < 0) {
+    retard = days * -1;
+  }
+  // retard =
   const risqueValue = (retard * 100) / nombreDeJours;
   return {
     coefficientDeRisque,
@@ -72,18 +90,11 @@ export function parseProjet(projet: SuiviDeProjet): ProjetParsedInterface {
     moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
   let tempsConsommes =
     moment(projet.finReel || new Date()).diff(
-      projet.debutReel || new Date(),
+      projet.debutPrevisionnel,
       "days"
     ) + 1;
-  if (tempsConsommes < 0 || (!projet.finReel && !projet.debutReel)) {
-    tempsConsommes = 0;
-  }
   const coefficientDeRisque = 1;
-  const risqueParsed = parseRisque(
-    nombreDeJours,
-    tempsConsommes,
-    coefficientDeRisque
-  );
+  const risqueParsed = parseRisque(projet, coefficientDeRisque);
   if (!projet.finReel && !projet.debutReel) {
     risqueParsed.retard = 0;
   }
@@ -128,18 +139,14 @@ export async function getSuiviDeProjetOfUserClient(
     allProjets,
     tempsConsommesOfSuiviDeProjet,
   } = await getSuiviDeProjet(siteName);
-  const risqueParsed = parseRisque(
-    NOMBRE_DE_JOURS_TOTAL_OF_SUIVIDEPROJET,
-    NOMBRE_DE_JOURS_TOTAL_OF_SUIVIDEPROJET - retardOfSuiviDeProjet,
-    COEFFICIENT_DE_RISQUE_OF_SUIVIDEPROJET
-  );
   const jourMax = NOMBRE_DE_JOURS_TOTAL_OF_SUIVIDEPROJET;
   const progressionDeJours = tempsConsommesOfSuiviDeProjet;
   const indexOfProjetSelected = allProjets.findIndex((projet) => {
     if ([0, 50].includes(projet.progression)) return true;
   });
-
   const projetSelected = allProjets.at(indexOfProjetSelected);
+  const risqueParsed = parseRisque(projetSelected, 1);
+
   return {
     ...risqueParsed,
     siteName,
