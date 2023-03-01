@@ -53,7 +53,8 @@ export function parseRisque(
     moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
 
   const dateFin = projet.finReel || projet.debutReel || new Date();
-  const tempsConsommes = moment(dateFin).diff(projet.debutReel, "days") + 1;
+  const tempsConsommes =
+    moment(dateFin).diff(projet.debutPrevisionnel, "days") + 1;
 
   const retard = moment(dateFin).diff(projet.finPrevisionnel, "days");
   // retard =
