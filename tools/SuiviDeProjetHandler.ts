@@ -53,9 +53,19 @@ export function parseRisque(
     moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
 
   const dateFin = projet.finReel || projet.debutReel || new Date();
-  const tempsConsommes =
+  let tempsConsommes =
     moment(dateFin).diff(projet.debutPrevisionnel, "days") + 1;
-
+  if (tempsConsommes < 0) {
+    if (projet.debutReel && projet.finReel) {
+      tempsConsommes =
+        moment(projet.finReel).diff(projet.debutReel, "days") + 1;
+    } else if (projet.debutReel) {
+      tempsConsommes = moment(new Date()).diff(projet.debutReel, "days") + 1;
+    }
+    if (tempsConsommes < 0) {
+      tempsConsommes = 0;
+    }
+  }
   const retard = moment(dateFin).diff(projet.finPrevisionnel, "days");
   // retard =
   const risqueValue = (retard * 100) / nombreDeJours;
