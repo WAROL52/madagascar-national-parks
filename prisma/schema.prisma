@@ -13,6 +13,7 @@ generator nestjsDto {
 datasource db {
   provider     = "mysql"
   url          = "mysql://xigh60z4mo532i37sac8:pscale_pw_pANR8dbWvNWmiAzcF8L75NEi4VVMEGGaP4WGYHRR9FQ@us-east.connect.psdb.cloud/mnp-database?sslaccept=strict"
+  // url          = "mysql://root:@localhost:3306/mnp"
   relationMode = "prisma"
 }
 

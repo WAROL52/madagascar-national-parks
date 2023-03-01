@@ -196,8 +196,8 @@ export default function TableOfOneProjet({
     if (user) {
       setLoading(true);
       getSuiviDeProjetOfUserClient(
-        user.email.siteName,
-        `${user.nom} ${user.prenom}`
+        user?.email?.siteName,
+        `${user?.nom || ""} ${user?.prenom || ""}`
       ).then((ProjetOfUser) => {
         setSuiviDeProjets(ProjetOfUser);
         setLoading(false);
@@ -281,7 +281,7 @@ export default function TableOfOneProjet({
             <span className="badge text-bg-dark">Responsable :</span>
             <span>
               {" "}
-              {user.nom} {user.prenom}
+              {user?.nom} {user?.prenom}
             </span>
           </div>
           <div className="col-6">

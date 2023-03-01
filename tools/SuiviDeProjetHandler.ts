@@ -49,25 +49,13 @@ export function parseRisque(
   projet: SuiviDeProjet,
   coefficientDeRisque: RisquePropsInterface["coefficientDeRisque"]
 ): RisquePropsInterface {
-  projet.debutReel = projet.debutReel && new Date(projet.debutReel);
-  projet.finReel = projet.finReel && new Date(projet.finReel);
-  projet.debutPrevisionnel = new Date(projet.debutPrevisionnel);
-  projet.finPrevisionnel = new Date(projet.debutReel);
   const nombreDeJours =
     moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
 
-  let retard = 0;
-  let tempsConsommes =
-    moment(projet.finReel || projet.debutReel || new Date()).diff(
-      projet.debutReel,
-      "days"
-    ) + 1;
-
   const dateFin = projet.finReel || projet.debutReel || new Date();
-  let days = moment(dateFin).diff(projet.finPrevisionnel, "days");
-  if (days < 0) {
-    retard = days * -1;
-  }
+  const tempsConsommes = moment(dateFin).diff(projet.debutReel, "days") + 1;
+
+  const retard = moment(dateFin).diff(projet.finPrevisionnel, "days");
   // retard =
   const risqueValue = (retard * 100) / nombreDeJours;
   return {
@@ -86,18 +74,8 @@ export function parseProjet(projet: SuiviDeProjet): ProjetParsedInterface {
   projet.finReel = projet.finReel && new Date(projet.finReel);
   projet.debutReel = projet.debutReel && new Date(projet.debutReel);
 
-  const nombreDeJours =
-    moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
-  let tempsConsommes =
-    moment(projet.finReel || new Date()).diff(
-      projet.debutPrevisionnel,
-      "days"
-    ) + 1;
   const coefficientDeRisque = 1;
   const risqueParsed = parseRisque(projet, coefficientDeRisque);
-  if (!projet.finReel && !projet.debutReel) {
-    risqueParsed.retard = 0;
-  }
   return {
     ...projet,
     ...risqueParsed,

@@ -52,6 +52,13 @@ export default async function handler(
             },
           },
         },
+        include: {
+          User: {
+            include: {
+              email: true,
+            },
+          },
+        },
       });
       return res.status(200).json(resEmail);
     }

@@ -91,8 +91,9 @@ export default async function handler(
   const siteName = Object.keys(SiteName);
   // const suivi = await prisma.suiviExcecution.deleteMany();
   const suivi = [];
-  for (let index = 0; index < tachesExcecution.length; index++) {
-    const tache = tachesExcecution[index];
+  const taches = [...tachesFormation, ...tachesExcecution];
+  for (let index = 0; index < taches.length; index++) {
+    const tache = taches[index];
     suivi.push(
       await prisma.suiviDeProjet.createMany({
         data: siteName.map((name) => {

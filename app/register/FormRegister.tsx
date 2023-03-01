@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+import { setUserCookiesClient } from "@/tools/authClient";
+import { Email } from "@/prisma/dto/email/entities/email.entity";
 
 type Inputs = {
   email: string;
@@ -34,13 +36,9 @@ export default function FormRegister() {
       }
       return router.push("/register-refused2");
     } else {
-      const { email, motdepasse, nom, prenom, id } = dataRes;
-      Cookies.set(
-        "user",
-        JSON.stringify({ email, motdepasse, nom, prenom, id })
-      );
-      router.refresh();
-      return router.push(`/apps/user/${id}/apercue`);
+      setUserCookiesClient(dataRes.User);
+      router.push(`/apps/user/${dataRes.User.id}/apercue`);
+      return router.refresh();
     }
   }; // watch input value by passing the name of it
   return (
