@@ -2,6 +2,7 @@ import SaveLoading from "@/app/components/SaveLoading";
 import { Email } from "@/prisma/dto/email/entities/email.entity";
 import { Site } from "@/prisma/dto/site/entities/site.entity";
 import { User } from "@/prisma/dto/user/entities/user.entity";
+import { getUserCookiesClient, setUserCookiesClient } from "@/tools/authClient";
 import { Role, SiteName } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,7 @@ export function RoleUser({
   const [roleSelected, setRole] = useState<typeof email.role>(email.role);
   const [siteSelected, setSiteName] = useState<SiteName>(email.siteName);
   const [isLoading, setLoading] = useState(false);
+  const user = getUserCookiesClient();
   const router = useRouter();
   useEffect(() => {
     setRole(email.role);
@@ -31,8 +33,11 @@ export function RoleUser({
         role: roleSelected,
         siteName: siteSelected,
       })
-      .then(({ data }) => {
+      .then(({ data }: { data: Email }) => {
         updateUser(data as Email);
+        if (data.email === user.email.email) {
+          setUserCookiesClient(data.User);
+        }
         router.refresh();
         setLoading(false);
       });

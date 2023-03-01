@@ -109,6 +109,18 @@ enum Role {
 enum SiteName {
   aucun
   tous
+  AHL_CSM
+  ANL_ANK
+  ARG_IVB
+  BBL_TNRK
+  BTP_MGV
+  KRM_ARN
+  MDA_NSH
+  MNG_TST
+  MRJ_ANJ
+  MSL_NMB
+  MTD_ALZ
+  TSP_NSV_BZM
   ABT
   ABV
   AHL
