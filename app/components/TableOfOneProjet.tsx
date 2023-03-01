@@ -152,9 +152,10 @@ const columnsPart1: GridColDef[] = [
   },
   {
     field: "nombreDeJours",
-    headerName: "Jours",
+    headerName: "Durée",
     headerClassName,
     // resizable: true,
+    renderCell: ({ value }) => value && `${value} J`,
     width: 50,
   },
 ];

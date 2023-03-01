@@ -40,9 +40,9 @@ export interface ProjetOfUserClientInterface extends RisquePropsInterface {
   projetSelected: ProjetParsedInterface;
 }
 export function evaluateValueOfRisque(valueOfRisque: number): RisqueType {
-  if (valueOfRisque <= 25) return "En bonne voie";
-  if (valueOfRisque <= 50) return "Risque faible";
-  if (valueOfRisque <= 75) return "Risque moyen";
+  if (valueOfRisque <= 0) return "En bonne voie";
+  if (valueOfRisque <= 25) return "Risque faible";
+  if (valueOfRisque <= 50) return "Risque moyen";
   return "Risque élevé";
 }
 export function parseRisque(
