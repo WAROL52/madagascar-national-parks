@@ -37,7 +37,9 @@ export class AxiosService {
     const body: BodyType = {
       folderName: newFolderName,
       folderParentPathName: folderParent.folderPathName,
-      folderPathName: `${folderParent.folderPathName}/${newFolderName}`,
+      folderPathName: `${
+        folderParent.folderPathName === "/" ? "" : folderParent.folderPathName
+      }/${newFolderName}`,
     };
     return await post<Folder>("/api/system-file/create-folder", body);
   }

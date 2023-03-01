@@ -3,6 +3,7 @@ import { AppFileBrowser } from "@/app/components/FileManager/AppFileBrowser";
 import LoadingComponent from "@/app/components/LoadingComponent";
 import SaveLoading from "@/app/components/SaveLoading";
 import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
+import { getUserCookiesClient } from "@/tools/authClient";
 import { AxiosService } from "@/tools/axiosService";
 import React, { use, useState, useEffect, FormEvent } from "react";
 import { Modal } from "react-bootstrap";
@@ -12,6 +13,7 @@ import TeleverserUnFichier from "./TeleverserUnFichier";
 
 export default function FileSysteme() {
   // const folderRoot = use(AxiosService.getFolderRoot());
+  const user = getUserCookiesClient();
   const [folderRoot, setFolderRoot] = useState<Folder>(null);
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderLoading, setNewFolderLoading] = useState(false);
@@ -69,6 +71,7 @@ export default function FileSysteme() {
                 type="button"
                 className="btn btn-light mt-2 px-3"
                 onClick={() => setShowCreateNewFolder(true)}
+                disabled={user.email.role === "ResponsableSite"}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
