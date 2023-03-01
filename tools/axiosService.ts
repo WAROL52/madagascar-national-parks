@@ -1,3 +1,4 @@
+import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
 import { SuiviDeProjet } from "@/prisma/dto/suivi-de-projet/entities/suivi-de-projet.entity";
 import { SiteName } from "@prisma/client";
 import axios from "axios";
@@ -23,5 +24,28 @@ export class AxiosService {
       id: projetID,
       finReel,
     });
+  }
+  static async getFolderRoot() {
+    return await post<Folder>("/api/system-file/folder-root");
+  }
+  static async createNewFolder(folderParent: Folder, newFolderName: string) {
+    type BodyType = {
+      folderName: string;
+      folderPathName: string;
+      folderParentPathName: string;
+    };
+    const body: BodyType = {
+      folderName: newFolderName,
+      folderParentPathName: folderParent.folderPathName,
+      folderPathName: `${folderParent.folderPathName}/${newFolderName}`,
+    };
+    return await post<Folder>("/api/system-file/create-folder", body);
+  }
+  static async openFolder(folderPathName: string) {
+    type BodyType = {
+      folderPathName: string;
+    };
+    const body: BodyType = { folderPathName };
+    return await post<Folder>("/api/system-file/open-folder", body);
   }
 }

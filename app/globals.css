@@ -276,3 +276,7 @@ footer {
 .h-200px {
   height: 200px;
 }
+
+.btn-fileStructure:hover {
+  border: #9a9c05b7 2px solid;
+}

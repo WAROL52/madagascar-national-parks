@@ -36,3 +36,4 @@ yarn-error.log*
 next-env.d.ts
 prisma/~$data.xlsb
 prisma/database.sqlite3
+prisma/dto/

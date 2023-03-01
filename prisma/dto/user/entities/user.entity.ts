@@ -7,7 +7,6 @@ export class User {
   id: number ;
 createdAt: Date ;
 updatedAt: Date ;
-emailId: number ;
 nom: string ;
 prenom: string ;
 motdepasse: string  | null;
@@ -20,4 +19,5 @@ sexe: Sexe ;
 description: string  | null;
 avatar: string  | null;
 email?: Email ;
+emailId: number ;
 }
