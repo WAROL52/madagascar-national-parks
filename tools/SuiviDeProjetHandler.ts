@@ -9,6 +9,12 @@ export type RisqueType =
   | "Risque faible"
   | "Risque moyen"
   | "Risque élevé";
+export const risqueList = [
+  "En bonne voie",
+  "Risque faible",
+  "Risque moyen",
+  "Risque élevé",
+] as const;
 export interface RisquePropsInterface {
   nombreDeJours: number;
   tempsConsommes: number;
@@ -155,7 +161,7 @@ export function parseSuiviDeProjet(suiviDeProjets: SuiviDeProjet[]) {
     retardOfSuiviDeProjet,
   };
 }
-export async function getAllSuiviDeProjetOfUserClient(): Promise<
+export async function getAllSuiviDeProjetOfUserClient1(): Promise<
   ProjetOfUserClientInterface[]
 > {
   const suiviDeProjets: ProjetOfUserClientInterface[] = [];
@@ -168,21 +174,58 @@ export async function getAllSuiviDeProjetOfUserClient(): Promise<
   }
   return suiviDeProjets;
 }
+export async function getAllSuiviDeProjetOfUserClient(): Promise<
+  ProjetOfUserClientInterface[]
+> {
+  const allsuiviDeProjets = await getAllSuiviDeProjet();
+  const suiviDeProjets: ProjetOfUserClientInterface[] = allsuiviDeProjets.map(
+    ({ suiviDeProjet, siteName, responsable }) =>
+      parseSuiviDeProjetOfUserClient(suiviDeProjet, siteName, responsable)
+  );
+
+  return suiviDeProjets;
+}
 export async function getSuiviDeProjet(siteName: SiteName) {
   const suiviDeProjets = await AxiosService.getSuiviDeProjet(siteName);
   return parseSuiviDeProjet(suiviDeProjets);
 }
-export async function getSuiviDeProjetOfUserClient(
+export async function getAllSuiviDeProjet() {
+  const suiviDeProjets = await AxiosService.getAllSuiviDeProjet();
+  const allsuiviDeProjets: {
+    suiviDeProjet: ReturnType<typeof parseSuiviDeProjet>;
+    siteName: SiteName;
+    responsable: string;
+  }[] = [];
+  const siteNames = Object.keys(SiteName) as SiteName[];
+  for (let index = 0; index < siteNames.length; index++) {
+    const siteName = siteNames[index];
+    if (!siteName.includes("_")) {
+      const suiviDeProjetsFiltered = suiviDeProjets.filter(
+        (projet) => projet.siteName === siteName
+      );
+      allsuiviDeProjets.push({
+        suiviDeProjet: parseSuiviDeProjet(suiviDeProjetsFiltered),
+        siteName,
+        responsable: "-",
+      });
+    }
+  }
+  return allsuiviDeProjets;
+}
+export function parseSuiviDeProjetOfUserClient(
+  suiviDeProjet: ReturnType<typeof getSuiviDeProjet> extends Promise<infer T>
+    ? T
+    : never,
   siteName: SiteName,
   responsable: string
-): Promise<ProjetOfUserClientInterface> {
+): ProjetOfUserClientInterface {
   const {
     retardOfSuiviDeProjet,
     formation,
     excecution,
     allProjets,
     tempsConsommesOfSuiviDeProjet,
-  } = await getSuiviDeProjet(siteName);
+  } = suiviDeProjet;
   const jourMax = NOMBRE_DE_JOURS_TOTAL_OF_SUIVIDEPROJET;
   const progressionDeJours = tempsConsommesOfSuiviDeProjet;
   const indexOfProjetSelected = allProjets.findIndex((projet) => {
@@ -204,12 +247,22 @@ export async function getSuiviDeProjetOfUserClient(
     projetSelected,
   };
 }
+export async function getSuiviDeProjetOfUserClient(
+  siteName: SiteName,
+  responsable: string
+): Promise<ProjetOfUserClientInterface> {
+  const suiviDeProjet = await getSuiviDeProjet(siteName);
+  return parseSuiviDeProjetOfUserClient(suiviDeProjet, siteName, responsable);
+}
 export async function updateDebutReelOfProjet(
   responsable: string,
   projet: ProjetParsedInterface,
-  debutReel: Date
+  debutReel: Date | null
 ): Promise<null | ProjetOfUserClientInterface> {
-  debutReel = new Date(debutReel);
+  debutReel = debutReel && new Date(debutReel);
+  if (!debutReel) {
+    debutReel = null;
+  }
   if (projet.finReel && moment(projet.finReel).diff(debutReel, "days") < 0)
     return null;
   const updatedProjet = await AxiosService.updateDebutReelOfProjet(
@@ -221,11 +274,12 @@ export async function updateDebutReelOfProjet(
 export async function updateFinReelOfProjet(
   responsable: string,
   projet: ProjetParsedInterface,
-  finReel: Date
+  finReel: Date | null
 ): Promise<null | ProjetOfUserClientInterface> {
-  finReel = new Date(finReel);
+  finReel = finReel && new Date(finReel);
   if (!projet.debutReel) return null;
-  if (moment(finReel).diff(projet.debutReel, "days") < 0) return null;
+  if (finReel && moment(finReel).diff(projet.debutReel, "days") < 0)
+    return null;
   const updatedProjet = await AxiosService.updateFinReelOfProjet(
     projet.id,
     finReel
@@ -262,3 +316,81 @@ export const etapes = [
   "RESTITUTION AUX COMMUNAUTES",
   "EVALUATION PARTICIPATIVE ",
 ];
+export const tachesFormation = [
+  {
+    tacheName: "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
+    debutPrevionnel: new Date("06/02/2023"),
+    finPrevisionnel: new Date("06/02/2023"),
+    etape: 1,
+  },
+  {
+    tacheName: "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
+    debutPrevionnel: new Date("06/03/2023"),
+    finPrevisionnel: new Date("07/03/2023"),
+    etape: 2,
+  },
+  {
+    tacheName:
+      "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
+    debutPrevionnel: new Date("06/04/2023"),
+    finPrevisionnel: new Date("07/04/2023"),
+    etape: 3,
+  },
+  {
+    tacheName: "IMPACTS, PGES, RISQUES, MGP ",
+    debutPrevionnel: new Date("08/05/2023"),
+    finPrevisionnel: new Date("09/05/2023"),
+    etape: 4,
+  },
+  {
+    tacheName: "RESTITUTION AUX COMMUNAUTES",
+    debutPrevionnel: new Date("06/06/2023"),
+    finPrevisionnel: new Date("06/06/2023"),
+    etape: 5,
+  },
+  {
+    tacheName: "EVALUATION PARTICIPATIVE ",
+    debutPrevionnel: new Date("01/07/2023"),
+    finPrevisionnel: new Date("01/07/2023"),
+    etape: 6,
+  },
+] as const;
+export const tachesExcecution = [
+  {
+    tacheName: "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
+    debutPrevionnel: new Date("07/02/2023"),
+    finPrevisionnel: new Date("05/03/2023"),
+    etape: 1,
+  },
+  {
+    tacheName: "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
+    debutPrevionnel: new Date("08/03/2023"),
+    finPrevisionnel: new Date("05/04/2023"),
+    etape: 2,
+  },
+  {
+    tacheName:
+      "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
+    debutPrevionnel: new Date("08/04/2023"),
+    finPrevisionnel: new Date("07/05/2023"),
+    etape: 3,
+  },
+  {
+    tacheName: "IMPACTS, PGES, RISQUES, MGP ",
+    debutPrevionnel: new Date("10/05/2023"),
+    finPrevisionnel: new Date("05/06/2023"),
+    etape: 4,
+  },
+  {
+    tacheName: "RESTITUTION AUX COMMUNAUTES",
+    debutPrevionnel: new Date("07/06/2023"),
+    finPrevisionnel: new Date("30/06/2023"),
+    etape: 5,
+  },
+  {
+    tacheName: "EVALUATION PARTICIPATIVE ",
+    debutPrevionnel: new Date("02/07/2023"),
+    finPrevisionnel: new Date("03/07/2023"),
+    etape: 6,
+  },
+] as const;

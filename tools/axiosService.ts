@@ -22,7 +22,7 @@ export class AxiosService {
       debutReel,
     });
   }
-  static async updateFinReelOfProjet(projetID: number, finReel: Date) {
+  static async updateFinReelOfProjet(projetID: number, finReel: Date | null) {
     return await post<SuiviDeProjet>("/api/tools-suivi/update-finReel", {
       id: projetID,
       finReel,

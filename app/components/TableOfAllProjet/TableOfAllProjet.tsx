@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import React, { useState, useEffect } from "react";
@@ -8,12 +9,13 @@ import {
   GridColDef,
   GridToolbar,
   GridValueSetterParams,
+  GridRowParams,
 } from "@mui/x-data-grid";
 import { TextField } from "@mui/material";
 import { getUserCookiesClient } from "@/tools/authClient";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ProjetName } from "@prisma/client";
+import { ProjetName, SiteName } from "@prisma/client";
 import {
   getAllSuiviDeProjetOfUserClient,
   getSuiviDeProjetOfUserClient,
@@ -24,12 +26,23 @@ import {
   updateFinReelOfProjet,
 } from "@/tools/SuiviDeProjetHandler";
 import { columnsPart1, columnsPart2, headerClassName } from "./columnsDef";
+import { Modal, Button, Nav } from "react-bootstrap";
+import TableOfOneProjet from "../TableOfOneProjet/TableOfOneProjet";
 
 export default function TableOfAllProjet({
   projetName,
 }: {
   projetName: ProjetName;
 }) {
+  const [detailsSelected, setDetailsSelected] =
+    useState<ProjetName>(projetName);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => {
+    setShow(false);
+    setDetailsSelected(projetName);
+  };
+  const handleShow = () => setShow(true);
   const user = getUserCookiesClient();
   const router = useRouter();
   const [allSuiviDeProjets, setAllSuiviDeProjets] = useState<
@@ -38,13 +51,21 @@ export default function TableOfAllProjet({
   const [indexSuiviDeProjetsSelected, setIndexSuiviDeProjetsSelected] =
     useState<number>(0);
   const suiviDeProjetsSelected = allSuiviDeProjets[indexSuiviDeProjetsSelected];
-  const projets = suiviDeProjetsSelected?.[projetName] || [];
+  // const projets = suiviDeProjetsSelected?.[projetName] || [];
+  const projets = allSuiviDeProjets.map((suiviProjet) => {
+    const indexOfTache = suiviProjet[projetName].findIndex((tache) =>
+      [0, 50].includes(tache.progression)
+    );
+    return suiviProjet[projetName].at(indexOfTache);
+  });
   const [isLoading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    setDetailsSelected(projetName);
+  }, [indexSuiviDeProjetsSelected, suiviDeProjetsSelected, projetName]);
   useEffect(() => {
     if (user) {
       setLoading(true);
       getAllSuiviDeProjetOfUserClient().then((ProjetOfUser) => {
-        console.log(ProjetOfUser);
         setAllSuiviDeProjets(ProjetOfUser);
         setLoading(false);
       });
@@ -88,10 +109,7 @@ export default function TableOfAllProjet({
         >
           <div className="col-3">
             <span className="badge text-bg-dark">Responsable :</span>
-            <span>
-              {" "}
-              {user?.nom} {user?.prenom}
-            </span>
+            <span> {rowEnCours?.responsable}</span>
           </div>
           <div className="col-6">
             <span className="badge text-bg-dark "> Tâche en cours :</span>
@@ -139,8 +157,22 @@ export default function TableOfAllProjet({
           </div>
         </div>
       </div>
-      <div style={{ height: 500, width: "100%" }} className="shadow mb-3">
+      <div style={{ height: 700, width: "100%" }} className="shadow mb-3">
         <DataGrid
+          isRowSelectable={() => true}
+          onRowClick={({ row }: GridRowParams<ProjetParsedInterface>) => {
+            const index = projets.findIndex((projet) => projet.id === row.id);
+            if (index > -1) {
+              setIndexSuiviDeProjetsSelected(index);
+            }
+          }}
+          onRowDoubleClick={({ row }: GridRowParams<ProjetParsedInterface>) => {
+            const index = projets.findIndex((projet) => projet.id === row.id);
+            if (index > -1) {
+              setIndexSuiviDeProjetsSelected(index);
+              handleShow();
+            }
+          }}
           rows={projets}
           // @ts-ignore
           columns={columnsDef}
@@ -156,6 +188,43 @@ export default function TableOfAllProjet({
           loading={isLoading}
         />
       </div>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+        size="xl"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Détails</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Nav
+            variant="tabs"
+            activeKey={detailsSelected}
+            onSelect={(selectedKey: ProjetName) =>
+              setDetailsSelected(selectedKey)
+            }
+          >
+            <Nav.Item>
+              <Nav.Link eventKey="formation">Formation</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="excecution">Excecution</Nav.Link>
+            </Nav.Item>
+          </Nav>
+          <TableOfOneProjet
+            projetName={detailsSelected}
+            siteName={suiviDeProjetsSelected?.siteName || null}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Fermer
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

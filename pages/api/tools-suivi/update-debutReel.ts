@@ -17,10 +17,11 @@ export default async function handler(
       debutReel: string | Date;
       finReel: string | Date | null;
     };
+    const debutReel = data.debutReel && new Date(data.debutReel);
     const email = await prisma.suiviDeProjet.update({
       where: { id: data.id },
       data: {
-        debutReel: new Date(data.debutReel),
+        debutReel: debutReel || null,
       },
     });
     return res.status(200).json(email);

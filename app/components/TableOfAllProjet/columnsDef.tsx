@@ -1,4 +1,8 @@
-import { risque } from "@/tools/SuiviDeProjetHandler";
+import {
+  risque,
+  risqueList,
+  tachesFormation,
+} from "@/tools/SuiviDeProjetHandler";
 import { GridColDef } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
 export const headerClassName = "text-bg-warning";
@@ -39,6 +43,11 @@ const renderRisque: GridColDef["renderCell"] = ({ value }) => {
 };
 const renderCellJours: GridColDef["renderCell"] = ({ value }) =>
   value && `${value} Jour${value === 1 ? "" : "s"}`;
+const risqueComparator = (v1, v2) => {
+  const indexV1 = risqueList.findIndex((risque) => risque === v1);
+  const indexV2 = risqueList.findIndex((risque) => risque === v2);
+  return indexV1 - indexV2;
+};
 export const columnsPart1: GridColDef[] = [
   {
     field: "siteName",
@@ -64,12 +73,30 @@ export const columnsPart1: GridColDef[] = [
     width: 125,
     // hide: true,
     renderCell: renderRisque,
+    sortComparator: risqueComparator,
   },
   {
     field: "tacheName",
     headerName: "Tâche en cours",
     headerClassName,
     width: 225,
+    sortComparator: (v1, v2) => {
+      const indexV1 = tachesFormation.findIndex(
+        (tache) => tache.tacheName === v1
+      );
+      const indexV2 = tachesFormation.findIndex(
+        (tache) => tache.tacheName === v2
+      );
+      return indexV1 - indexV2;
+    },
+    renderCell: ({ value }) => {
+      const tache = tachesFormation.find((tache) => tache.tacheName === value);
+      let step = 0;
+      if (tache) {
+        step = tache.etape;
+      }
+      return `(${step}/${tachesFormation.length}) ${value}`;
+    },
   },
   {
     field: "risque",
@@ -79,6 +106,7 @@ export const columnsPart1: GridColDef[] = [
     cellClassName: "p-0",
     width: 125,
     renderCell: renderRisque,
+    sortComparator: risqueComparator,
   },
 
   {

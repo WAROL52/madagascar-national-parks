@@ -13,7 +13,7 @@ import { TextField } from "@mui/material";
 import { getUserCookiesClient } from "@/tools/authClient";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ProjetName } from "@prisma/client";
+import { ProjetName, SiteName } from "@prisma/client";
 import {
   getSuiviDeProjetOfUserClient,
   ProjetOfUserClientInterface,
@@ -21,6 +21,7 @@ import {
   updateDebutReelOfProjet,
   updateFinReelOfProjet,
 } from "@/tools/SuiviDeProjetHandler";
+import moment from "moment";
 const risque = {
   "En bonne voie": {
     title: "En bonne voie",
@@ -188,8 +189,10 @@ const columnsPart2: GridColDef[] = [
 ];
 export default function TableOfOneProjet({
   projetName,
+  siteName = null,
 }: {
   projetName: ProjetName;
+  siteName?: SiteName | null;
 }) {
   const user = getUserCookiesClient();
   const router = useRouter();
@@ -197,11 +200,14 @@ export default function TableOfOneProjet({
     useState<ProjetOfUserClientInterface>(null);
   const projets = suiviDeProjets?.[projetName] || [];
   const [isLoading, setLoading] = useState<boolean>(true);
+  if (!siteName) {
+    siteName = user?.email?.siteName;
+  }
   useEffect(() => {
     if (user) {
       setLoading(true);
       getSuiviDeProjetOfUserClient(
-        user?.email?.siteName,
+        siteName,
         `${user?.nom || ""} ${user?.prenom || ""}`
       ).then((ProjetOfUser) => {
         setSuiviDeProjets(ProjetOfUser);
@@ -214,7 +220,7 @@ export default function TableOfOneProjet({
   const updateDebutReelOrFinReel = (
     type: "debutReel" | "finReel",
     projet: ProjetParsedInterface,
-    dateValue: Date
+    dateValue: Date | null
   ) => {
     setLoading(true);
     const update =
@@ -240,16 +246,27 @@ export default function TableOfOneProjet({
       editable: true,
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
-      // valueGetter: ({ value }) => value && new Date(value),
+      valueSetter: (params: GridValueSetterParams) => {
+        const projet = params.row as ProjetParsedInterface;
+        const value = params.value && new Date(params.value);
+        updateDebutReelOrFinReel("debutReel", projet, value);
+        projet.debutReel = value;
+        return { ...projet };
+      },
       valueParser: (value, param) => {
         const projet = param.row as ProjetParsedInterface;
-        value = new Date(value);
-        if (projet.debutReel) {
-          return new Date(projet.debutReel);
+        value = (value && new Date(value)) as Date | null;
+        if (projet.finReel && moment(projet.finReel).diff(value, "days") < 0) {
+          alert(
+            "la date de début réelle DOIT être inferieur ou égale à la date de fin réelle!"
+          );
+          return value;
         }
-
-        updateDebutReelOrFinReel("debutReel", projet, value);
-
+        if (!["aucun", "tous"].includes(projet.siteName)) {
+          if (projet.debutReel) {
+            return new Date(projet.debutReel);
+          }
+        }
         return value;
       },
     },
@@ -261,16 +278,35 @@ export default function TableOfOneProjet({
       editable: true,
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
-      // valueGetter: ({ value }) => value && new Date(value),
+      valueSetter: (params: GridValueSetterParams) => {
+        const projet = params.row as ProjetParsedInterface;
+        const value = params.value && new Date(params.value);
+        updateDebutReelOrFinReel("finReel", projet, value);
+        console.log("valueSetter", value);
+        projet.finReel = value;
+        return { ...projet };
+      },
       valueParser: (value, param) => {
         const projet = param.row as ProjetParsedInterface;
         if (!projet.debutReel) {
+          alert("Entrez la date de début réelle en premier!");
           return null;
         }
-        if (projet.finReel) {
-          return new Date(projet.finReel);
+        console.log(value, moment(value).diff(projet.debutReel, "days"));
+        if (value && moment(value).diff(projet.debutReel, "days") < 0) {
+          alert(
+            "la date de fin réelle DOIT être superieur ou égale à la date de début réelle!"
+          );
+          if (projet.finReel) return new Date(projet.finReel);
+          if (projet.debutReel) return new Date(projet.debutReel);
+          return null;
         }
-        updateDebutReelOrFinReel("finReel", projet, value);
+
+        if (!["aucun", "tous"].includes(projet.siteName)) {
+          if (projet.finReel) {
+            return new Date(projet.finReel);
+          }
+        }
 
         return value;
       },

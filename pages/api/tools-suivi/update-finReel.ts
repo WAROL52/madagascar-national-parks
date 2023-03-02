@@ -18,11 +18,11 @@ export default async function handler(
       finReel: string | Date;
       debutReel: string | Date;
     };
-    const finReel = new Date(data.finReel);
+    const finReel = data.finReel && new Date(data.finReel);
     const email = await prisma.suiviDeProjet.update({
       where: { id: data.id },
       data: {
-        finReel,
+        finReel: finReel || null,
       },
     });
     console.log(email);
