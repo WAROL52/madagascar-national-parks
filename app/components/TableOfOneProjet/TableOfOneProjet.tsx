@@ -249,19 +249,26 @@ export default function TableOfOneProjet({
       valueSetter: (params: GridValueSetterParams) => {
         const projet = params.row as ProjetParsedInterface;
         const value = params.value && new Date(params.value);
-        updateDebutReelOrFinReel("debutReel", projet, value);
-        projet.debutReel = value;
+        if (projet.finReel && moment(projet.finReel).diff(value, "days") < 0) {
+          alert(
+            "la date de début réelle DOIT être inferieur ou égale à la date de fin réelle!"
+          );
+          return projet;
+        }
+
+        if (moment(value).diff(projet.debutReel, "days") !== 0) {
+          if (
+            confirm("Vous souhaitez enregistrer ? L'action est irréversible.")
+          ) {
+            updateDebutReelOrFinReel("debutReel", projet, value);
+            projet.debutReel = value;
+          }
+        }
         return { ...projet };
       },
       valueParser: (value, param) => {
         const projet = param.row as ProjetParsedInterface;
         value = (value && new Date(value)) as Date | null;
-        if (projet.finReel && moment(projet.finReel).diff(value, "days") < 0) {
-          alert(
-            "la date de début réelle DOIT être inferieur ou égale à la date de fin réelle!"
-          );
-          return value;
-        }
         if (!["aucun", "tous"].includes(projet.siteName)) {
           if (projet.debutReel) {
             return new Date(projet.debutReel);
@@ -281,26 +288,29 @@ export default function TableOfOneProjet({
       valueSetter: (params: GridValueSetterParams) => {
         const projet = params.row as ProjetParsedInterface;
         const value = params.value && new Date(params.value);
-        updateDebutReelOrFinReel("finReel", projet, value);
-        console.log("valueSetter", value);
-        projet.finReel = value;
-        return { ...projet };
-      },
-      valueParser: (value, param) => {
-        const projet = param.row as ProjetParsedInterface;
         if (!projet.debutReel) {
-          alert("Entrez la date de début réelle en premier!");
-          return null;
+          alert("Entrez d'abord la date de début réelle!");
+          return projet;
         }
-        console.log(value, moment(value).diff(projet.debutReel, "days"));
+        if (!value && !projet.finReel) return projet;
         if (value && moment(value).diff(projet.debutReel, "days") < 0) {
           alert(
             "la date de fin réelle DOIT être superieur ou égale à la date de début réelle!"
           );
-          if (projet.finReel) return new Date(projet.finReel);
-          if (projet.debutReel) return new Date(projet.debutReel);
-          return null;
+          return projet;
         }
+        if (moment(value).diff(projet.finReel, "days") !== 0) {
+          if (
+            confirm("Vous souhaitez enregistrer ? L'action est irréversible.")
+          ) {
+            updateDebutReelOrFinReel("finReel", projet, value);
+            projet.finReel = value;
+          }
+        }
+        return { ...projet };
+      },
+      valueParser: (value, param) => {
+        const projet = param.row as ProjetParsedInterface;
 
         if (!["aucun", "tous"].includes(projet.siteName)) {
           if (projet.finReel) {

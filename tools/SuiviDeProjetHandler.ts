@@ -60,9 +60,18 @@ export function parseRisque(
   const nombreDeJours =
     moment(projet.finPrevisionnel).diff(projet.debutPrevisionnel, "days") + 1;
 
-  const dateFin = projet.finReel || projet.debutReel || new Date();
+  const dateFinReel = projet.finReel || projet.debutReel || new Date();
+  const dateDebutReel =
+    moment(projet.debutPrevisionnel).diff(projet.debutReel, "days") < 0
+      ? projet.debutPrevisionnel
+      : projet.debutReel;
   let tempsConsommes =
-    moment(dateFin).diff(projet.debutPrevisionnel, "days") + 1;
+    moment(dateFinReel).diff(
+      projet.debutReel && projet.finReel
+        ? dateDebutReel
+        : projet.debutPrevisionnel,
+      "days"
+    ) + 1;
   if (tempsConsommes < 0) {
     if (projet.debutReel && projet.finReel) {
       tempsConsommes =
@@ -74,7 +83,7 @@ export function parseRisque(
       tempsConsommes = 0;
     }
   }
-  let retard = moment(dateFin).diff(projet.finPrevisionnel, "days");
+  let retard = moment(dateFinReel).diff(projet.finPrevisionnel, "days");
   if (retard < 0) {
     if (!projet.debutReel && !projet.finReel) {
       retard = 0;
