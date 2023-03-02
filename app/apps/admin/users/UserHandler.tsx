@@ -80,8 +80,8 @@ export function UserHandler() {
     });
   }, []);
   useEffect(() => {
-    if (idSelected !== null) {
-      setUser(users[idSelected]);
+    if (idSelected != null) {
+      setUser(users.find((user) => user.id === idSelected));
     } else {
       setUser(null);
     }
@@ -167,8 +167,8 @@ export function UserHandler() {
                         <ListGroup.Item
                           key={index}
                           action
-                          onClick={() => setId(index)}
-                          active={index === idSelected}
+                          onClick={() => setId(user.id)}
+                          active={user.id === idSelected}
                           className="px-0"
                         >
                           <div className="d-flex flex-stack px-0">

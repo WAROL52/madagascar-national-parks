@@ -243,7 +243,7 @@ export default function TableOfOneProjet({
       headerClassName,
       // resizable: true,
       width: 100,
-      editable: true,
+      editable: user?.email?.role === "ResponsableSite",
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
       valueSetter: (params: GridValueSetterParams) => {
@@ -282,7 +282,7 @@ export default function TableOfOneProjet({
       headerName: "Fin Réel",
       headerClassName,
       width: 100,
-      editable: true,
+      editable: user?.email?.role === "ResponsableSite",
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
       valueSetter: (params: GridValueSetterParams) => {
