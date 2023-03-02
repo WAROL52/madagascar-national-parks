@@ -87,6 +87,8 @@ const renderProgression: GridColDef["renderCell"] = ({ value }) => {
 };
 
 const headerClassName = "text-bg-warning";
+const renderCellJours: GridColDef["renderCell"] = ({ value }) =>
+  value && `${value} Jour${value === 1 ? "" : "s"}`;
 const columnsPart1: GridColDef[] = [
   {
     field: "siteName",
@@ -152,18 +154,20 @@ const columnsPart1: GridColDef[] = [
   },
   {
     field: "nombreDeJours",
-    headerName: "Durée",
+    headerName: "Durée de tâche",
     headerClassName,
     // resizable: true,
-    renderCell: ({ value }) => value && `${value} J`,
-    width: 50,
+    renderCell: renderCellJours,
+    width: 125,
   },
 ];
+
 const columnsPart2: GridColDef[] = [
   {
     field: "tempsConsommes",
     headerName: "Temps Consommes",
     headerClassName,
+    renderCell: renderCellJours,
     // resizable: true,
     width: 150,
   },
@@ -177,7 +181,7 @@ const columnsPart2: GridColDef[] = [
       <span
         className={value > 0 ? "text-danger" : value < 0 ? "text-success" : ""}
       >
-        {value}
+        {value && `${value} Jour${value === 1 ? "" : "s"}`}
       </span>
     ),
   },
@@ -277,7 +281,11 @@ export default function TableOfOneProjet({
   return (
     <>
       <div className="bg-dark text-secondary px-1 py-4 text-center">
-        <div className="row text-bg-success">
+        <div
+          className={`row text-bg-${
+            risque[suiviDeProjets?.risque || "En bonne voie"].color
+          }`}
+        >
           <div className="col-3">
             <span className="badge text-bg-dark">Responsable :</span>
             <span>
@@ -298,10 +306,14 @@ export default function TableOfOneProjet({
           </div>
           <div className="col-3">
             <span className="badge text-bg-dark"> Risque-projet :</span>
-            <span>En bonne voie</span>
+            <span>{suiviDeProjets?.risque} </span>
           </div>
         </div>
-        <div className="row text-bg-success">
+        <div
+          className={`row text-bg-${
+            risque[suiviDeProjets?.risque || "En bonne voie"].color
+          }`}
+        >
           <div className="col-3">
             <span className="badge text-bg-dark">Site :</span>
             <span>{rowEnCours && rowEnCours.siteName}</span>

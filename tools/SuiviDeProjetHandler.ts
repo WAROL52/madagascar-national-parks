@@ -26,6 +26,8 @@ export interface ProjetParsedInterface
   extends SuiviDeProjet,
     RisquePropsInterface {
   progression: number;
+  risqueProjet: RisqueType;
+  responsable: string;
 }
 export interface ProjetOfUserClientInterface extends RisquePropsInterface {
   allProjets: ProjetParsedInterface[];
@@ -66,7 +68,14 @@ export function parseRisque(
       tempsConsommes = 0;
     }
   }
-  const retard = moment(dateFin).diff(projet.finPrevisionnel, "days");
+  let retard = moment(dateFin).diff(projet.finPrevisionnel, "days");
+  if (retard < 0) {
+    if (!projet.debutReel && !projet.finReel) {
+      retard = 0;
+    } else if (projet.debutReel && !projet.finReel) {
+      retard = moment(new Date()).diff(projet.finPrevisionnel, "days");
+    }
+  }
   // retard =
   const risqueValue = (retard * 100) / nombreDeJours;
   return {
@@ -75,7 +84,35 @@ export function parseRisque(
     tempsConsommes,
     risqueValue,
     retard,
-    risque: evaluateValueOfRisque(risqueValue / coefficientDeRisque),
+    risque: evaluateValueOfRisque(risqueValue * coefficientDeRisque),
+  };
+}
+export function parseRisqueOfAllProjets(
+  allProjets: ProjetParsedInterface[]
+): RisquePropsInterface {
+  const coefficientDeRisque = COEFFICIENT_DE_RISQUE_OF_SUIVIDEPROJET;
+  const nombreDeJours = NOMBRE_DE_JOURS_TOTAL_OF_SUIVIDEPROJET;
+  let retard: number = 0;
+  let nombreDeJoursTotal = 0;
+  allProjets.map((projet) => {
+    nombreDeJoursTotal += projet.nombreDeJours;
+    if (projet.retard > 0) {
+      retard += projet.retard;
+    }
+  });
+  const risqueValue = (retard * 100) / nombreDeJoursTotal;
+  const risque = evaluateValueOfRisque(risqueValue * coefficientDeRisque);
+  allProjets.map((projet) => (projet.risqueProjet = risque));
+  return {
+    coefficientDeRisque,
+    nombreDeJours: nombreDeJoursTotal,
+    retard,
+    risque,
+    risqueValue,
+    tempsConsommes: moment(new Date()).diff(
+      allProjets.at(0).debutPrevisionnel,
+      "days"
+    ),
   };
 }
 export function parseProjet(projet: SuiviDeProjet): ProjetParsedInterface {
@@ -92,14 +129,15 @@ export function parseProjet(projet: SuiviDeProjet): ProjetParsedInterface {
     ...risqueParsed,
     progression:
       projet.debutReel && projet.finReel ? 100 : projet.debutReel ? 50 : 0,
+    risqueProjet: "En bonne voie",
+    responsable: "",
   };
 }
-export async function getSuiviDeProjet(siteName: SiteName) {
+export function parseSuiviDeProjet(suiviDeProjets: SuiviDeProjet[]) {
   const formation: ProjetParsedInterface[] = [];
   const excecution: ProjetParsedInterface[] = [];
   let tempsConsommesOfSuiviDeProjet = 0;
   let retardOfSuiviDeProjet = 0;
-  const suiviDeProjets = await AxiosService.getSuiviDeProjet(siteName);
   const allProjets = suiviDeProjets.map((suiviDeProjet) => {
     const projet =
       suiviDeProjet.projetName === "formation" ? formation : excecution;
@@ -116,6 +154,23 @@ export async function getSuiviDeProjet(siteName: SiteName) {
     tempsConsommesOfSuiviDeProjet,
     retardOfSuiviDeProjet,
   };
+}
+export async function getAllSuiviDeProjetOfUserClient(): Promise<
+  ProjetOfUserClientInterface[]
+> {
+  const suiviDeProjets: ProjetOfUserClientInterface[] = [];
+  const siteNames = Object.keys(SiteName) as SiteName[];
+  for (let index = 0; index < siteNames.length; index++) {
+    const siteName = siteNames[index];
+    if (!siteName.includes("_")) {
+      suiviDeProjets.push(await getSuiviDeProjetOfUserClient(siteName, ""));
+    }
+  }
+  return suiviDeProjets;
+}
+export async function getSuiviDeProjet(siteName: SiteName) {
+  const suiviDeProjets = await AxiosService.getSuiviDeProjet(siteName);
+  return parseSuiviDeProjet(suiviDeProjets);
 }
 export async function getSuiviDeProjetOfUserClient(
   siteName: SiteName,
@@ -134,7 +189,7 @@ export async function getSuiviDeProjetOfUserClient(
     if ([0, 50].includes(projet.progression)) return true;
   });
   const projetSelected = allProjets.at(indexOfProjetSelected);
-  const risqueParsed = parseRisque(projetSelected, 1);
+  const risqueParsed = parseRisqueOfAllProjets(allProjets);
 
   return {
     ...risqueParsed,
@@ -177,3 +232,33 @@ export async function updateFinReelOfProjet(
   );
   return getSuiviDeProjetOfUserClient(projet.siteName, responsable);
 }
+export const risque = {
+  "En bonne voie": {
+    title: "En bonne voie",
+    value: -3000,
+    color: "success",
+  },
+  "Risque faible": {
+    title: "Risque faible",
+    value: 1,
+    color: "warning",
+  },
+  "Risque moyen": {
+    title: "Risque moyen",
+    value: 11,
+    color: "warning",
+  },
+  "Risque élevé": {
+    title: "Risque élevé",
+    value: -3000,
+    color: "danger",
+  },
+};
+export const etapes = [
+  "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
+  "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
+  "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
+  "IMPACTS, PGES, RISQUES, MGP ",
+  "RESTITUTION AUX COMMUNAUTES",
+  "EVALUATION PARTICIPATIVE ",
+];

@@ -1,4 +1,4 @@
-import TableFormation from "@/app/components/TableFormation";
+import TableOfAllProjet from "@/app/components/TableOfAllProjet/TableOfAllProjet";
 import React from "react";
 
 export default function page() {
@@ -26,7 +26,7 @@ export default function page() {
           </div>
         </div>
       </div>
-      <TableFormation />
+      <TableOfAllProjet projetName="formation" />
     </>
   );
 }

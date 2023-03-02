@@ -1,6 +1,6 @@
 "use client";
 
-import TableOfOneProjet from "./TableOfOneProjet";
+import TableOfOneProjet from "./TableOfOneProjet/TableOfOneProjet";
 
 export default function TableExcecution() {
   return (

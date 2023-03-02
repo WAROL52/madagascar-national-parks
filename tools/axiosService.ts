@@ -13,6 +13,9 @@ export class AxiosService {
       siteName,
     });
   }
+  static async getAllSuiviDeProjet() {
+    return await post<SuiviDeProjet[]>("/api/tools-suivi/get-all");
+  }
   static async updateDebutReelOfProjet(projetID: number, debutReel: Date) {
     return await post<SuiviDeProjet>("/api/tools-suivi/update-debutReel", {
       id: projetID,
