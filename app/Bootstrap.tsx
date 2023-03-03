@@ -7,7 +7,7 @@ import BootstrapClient from "./BootstrapClient";
 
 export default function Bootstrap({ children }: { children: React.ReactNode }) {
   // salut rolio
-  return (
+  return ( 
     <>
       {/* <SSRProvider> */}
       <HeaderNav />
