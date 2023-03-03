@@ -87,7 +87,7 @@ export default function FileSysteme() {
                 Créer un dossier
               </button>
 
-              <TeleverserUnFichier />
+              <TeleverserUnFichier folder={folderRoot} />
             </div>
           </div>
           <div

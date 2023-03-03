@@ -78,27 +78,29 @@ model Folder {
   folderPathName String @unique
 
   folderParentId Int?
-  folderParent   Folder?  @relation("parentChildrens", fields: [folderParentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  folderChilds   Folder[] @relation("parentChildrens")
-  File           File[]
+  folderParent   Folder?      @relation("parentChildrens", fields: [folderParentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  folderChilds   Folder[]     @relation("parentChildrens")
+  fileChilds     FileSchema[]
 
   @@index([folderParentId])
 }
 
-model File {
+model FileSchema {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fileName     String
-  fileNameSrc  String @unique
-  filePathName String @unique
-  type         String
+  fileName      String
+  fileNameSrc   String @unique
+  filePathName  String @unique
+  type          String
+  googleDriveID String
 
   folderParent Folder @relation(fields: [folderId], references: [id])
   folderId     Int
 
   @@index([folderId])
+  @@index([googleDriveID])
 }
 
 enum Role {

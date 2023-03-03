@@ -1,17 +1,6 @@
-import multer from "multer";
-import cors from "cors";
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    console.log(file);
-    cb(null, "app/files/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage: storage });
+import { NextApiRequest, NextApiResponse } from "next";
+import formidable from "formidable";
+import { GoogleDriveService } from "@/tools/googleDriveService";
 
 export const config = {
   api: {
@@ -19,16 +8,38 @@ export const config = {
   },
 };
 
-export default async function handler(req, res) {
-  //   await cors()(req, res);
+// ... autres configurations nécessaires à l'authentification
 
-  if (req.method === "POST") {
-    await upload.single("file")(req, res, (error) => {
-      if (error) {
-        res.status(500).send(error.message);
-      } else {
-        res.status(200).send("File uploaded successfully!");
-      }
-    });
-  }
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const form = new formidable.IncomingForm();
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Unexpected error" });
+    }
+
+    const file = files.file as formidable.File;
+
+    if (!file) {
+      return res.status(400).json({ error: "No file provided" });
+    }
+    try {
+      const uploadedFile = await GoogleDriveService.uploadFile(file);
+
+      console.log(
+        "[GoogleDriveService]:uploadedFile",
+        uploadedFile.statusText,
+        uploadedFile.data
+      );
+
+      return res.status(200).json(uploadedFile.data);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Unexpected error" });
+    }
+  });
 }

@@ -1,3 +1,4 @@
+import { FileSchema } from "@/prisma/dto/file-schema/entities/file-schema.entity";
 import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
 import { SuiviDeProjet } from "@/prisma/dto/suivi-de-projet/entities/suivi-de-projet.entity";
 import { SiteName } from "@prisma/client";
@@ -7,6 +8,7 @@ import { ProjetParsedInterface } from "./SuiviDeProjetHandler";
 const post = async function <R>(url: string, data?: any) {
   return await axios.post<R>(url, data).then(({ data }) => data);
 };
+export const SYMBOLE_SEPARATOR = "⫻";
 export class AxiosService {
   static async getSuiviDeProjet(siteName: SiteName) {
     return await post<SuiviDeProjet[]>("/api/tools-suivi/get-one", {
@@ -52,5 +54,50 @@ export class AxiosService {
     };
     const body: BodyType = { folderPathName };
     return await post<Folder>("/api/system-file/open-folder", body);
+  }
+  static async createOneFileToFolder(
+    folderParent: Folder,
+    file: {
+      fileName: string;
+      googleDriveID: string;
+      type: string;
+    }
+  ) {
+    const body = { folderParent, file };
+    return await post<FileSchema>("/api/system-file/create-file", body);
+  }
+  static async uploadFile(folderParent: Folder, file: File) {
+    const formData = new FormData();
+    // const b = f.slice();
+    const folderPathName = folderParent.folderPathName.replaceAll(
+      "/",
+      SYMBOLE_SEPARATOR
+    );
+    const newFile = new File(
+      [file],
+      `${folderPathName}${
+        folderPathName === SYMBOLE_SEPARATOR ? "" : SYMBOLE_SEPARATOR
+      }${file.name}`,
+      {
+        type: file.type,
+        lastModified: file.lastModified,
+      }
+    );
+    formData.append("file", newFile);
+
+    try {
+      const res = await axios.post("/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(`File uploaded: `, res.data);
+      const rFile = await AxiosService.createOneFileToFolder(folderParent, {
+        fileName: file.name,
+        googleDriveID: res.data.id,
+        type: file.type,
+      });
+      return res.data;
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

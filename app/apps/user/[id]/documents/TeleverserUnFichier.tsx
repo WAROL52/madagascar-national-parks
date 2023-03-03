@@ -1,16 +1,25 @@
 "use client";
+import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
+import { AxiosService } from "@/tools/axiosService";
 import React, { useRef } from "react";
 
-export default function TeleverserUnFichier() {
+export default function TeleverserUnFichier({ folder }: { folder: Folder }) {
   const inputFile = useRef<HTMLInputElement>();
   const handlerClick = () => {
+    console.log("click");
+
     inputFile.current.click();
   };
-  const handlerChange = () => {
+  const handlerChange = async () => {
     const files = inputFile.current.files;
+    console.log("handlerChange...");
+
     if (files.length) {
-      console.log(files);
+      console.log("sending file...", files);
+      const res = await AxiosService.uploadFile(folder, files[0]);
+      console.log("res--->", res);
     }
+    inputFile.current.value = "";
   };
   return (
     <>
