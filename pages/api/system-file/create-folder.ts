@@ -30,7 +30,7 @@ export default async function handler(
         folderPathName: data.folderParentPathName,
       },
       include: {
-        File: true,
+        fileChilds: true,
         folderChilds: true,
         folderParent: true,
       },
