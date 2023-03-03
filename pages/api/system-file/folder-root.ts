@@ -11,7 +11,7 @@ export default async function handler(
     where: { folderPathName: "/" },
     include: {
       folderChilds: true,
-      File: true,
+      fileChilds: true,
       folderParent: true,
     },
   });
