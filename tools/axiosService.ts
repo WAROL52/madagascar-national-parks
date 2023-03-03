@@ -64,7 +64,7 @@ export class AxiosService {
     }
   ) {
     const body = { folderParent, file };
-    return await post<FileSchema>("/api/system-file/create-file", body);
+    return await post<Folder>("/api/system-file/create-file", body);
   }
   static async uploadFile(folderParent: Folder, file: File) {
     const formData = new FormData();
@@ -90,12 +90,12 @@ export class AxiosService {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(`File uploaded: `, res.data);
-      const rFile = await AxiosService.createOneFileToFolder(folderParent, {
+      const folder = await AxiosService.createOneFileToFolder(folderParent, {
         fileName: file.name,
         googleDriveID: res.data.id,
         type: file.type,
       });
-      return res.data;
+      return folder;
     } catch (err) {
       console.error(err);
     }

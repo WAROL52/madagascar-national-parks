@@ -8,9 +8,11 @@ import { AxiosService } from "@/tools/axiosService";
 import React, { use, useState, useEffect, FormEvent } from "react";
 import { Modal } from "react-bootstrap";
 import BreadcrumbFolder from "./BreadcrumbFolder";
+import FileComponent from "./FileComponent";
 import FileStructure from "./FileStructure";
+import FolderComponent from "./FolderComponent";
 import TeleverserUnFichier from "./TeleverserUnFichier";
-
+export type OpenFolderType = (folderPathName: string) => void;
 export default function FileSysteme() {
   // const folderRoot = use(AxiosService.getFolderRoot());
   const user = getUserCookiesClient();
@@ -47,12 +49,14 @@ export default function FileSysteme() {
       setOpenFolderLoading(false);
     });
   }, []);
-  const openFolder = async (folderPathName: string) => {
+  const openFolder: OpenFolderType = async (folderPathName: string) => {
     setOpenFolderLoading(true);
     const folder = await AxiosService.openFolder(folderPathName);
     setFolderRoot(folder);
     setOpenFolderLoading(false);
   };
+  console.log(folderRoot);
+
   return (
     <>
       <div className="p-3">
@@ -87,7 +91,11 @@ export default function FileSysteme() {
                 Créer un dossier
               </button>
 
-              <TeleverserUnFichier folder={folderRoot} />
+              <TeleverserUnFichier
+                folder={folderRoot}
+                openFolder={openFolder}
+                setFolderRoot={setFolderRoot}
+              />
             </div>
           </div>
           <div
@@ -97,9 +105,18 @@ export default function FileSysteme() {
             {openFolderLoading && <LoadingComponent />}
             {!openFolderLoading &&
               folderRoot.folderChilds.map((folder, index) => (
-                <FileStructure
+                <FolderComponent
                   key={index}
                   folder={folder}
+                  openFolder={openFolder}
+                />
+              ))}
+            {!openFolderLoading &&
+              folderRoot.fileChilds.map((file, index) => (
+                <FileComponent
+                  key={index}
+                  folder={folderRoot}
+                  fileSchema={file}
                   openFolder={openFolder}
                 />
               ))}

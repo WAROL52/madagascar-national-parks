@@ -8,8 +8,16 @@ export default async function handler(
 ) {
   if (req.method == "POST") {
     const data = req.body as { fileId: string };
-    const result = await GoogleDriveService.getFile(data.fileId);
+    console.log("---------");
+
+    const result = await GoogleDriveService.getFile(
+      "1gMBmSonsPdaYOG_DvdyevVZl42hxksad" || data.fileId
+    );
+    const dataG = result.data
+    // const downloadUrl = URL.createObjectURL(
+    //   new Blob([dataG], { type: dataG.mimeType })
+    // );
     console.log("[GoogleDriveService]:getFile", result.statusText, result.data);
-    return res.status(200).json(result.data);
+    return res.status(200).json(dataG);
   }
 }
