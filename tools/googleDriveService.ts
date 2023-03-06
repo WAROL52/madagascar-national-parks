@@ -1,7 +1,7 @@
-import { google } from "googleapis";
+import { drive_v3, google } from "googleapis";
 import formidable from "formidable";
 import fs from "fs";
-const GOOGLE_COMPTE = {
+const credentials = {
   type: "service_account",
   project_id: "madagascar-national-parks",
   private_key_id: "149b4932f02f9c40b87c9377803f7b9cfb92316b",
@@ -16,23 +16,31 @@ const GOOGLE_COMPTE = {
   client_x509_cert_url:
     "https://www.googleapis.com/robot/v1/metadata/x509/mnp-service-compte%40madagascar-national-parks.iam.gserviceaccount.com",
 };
-const SCOPES = [
-  "https://www.googleapis.com/auth/drive",
-  "https://www.googleapis.com/auth/drive.file",
-  "https://www.googleapis.com/auth/drive.readonly",
-  "https://www.googleapis.com/auth/drive.metadata.readonly",
-  "https://www.googleapis.com/auth/drive.appdata",
-  "https://www.googleapis.com/auth/drive.metadata",
-  "https://www.googleapis.com/auth/drive.photos.readonly",
-];
-
+export const GOOGLE_DRIVE_OPTION = {
+  fields: "id,name,mimeType,webContentLink,permissions",
+} as const;
+export type GoogleDriveOptionType = {
+  fields: {
+    id: string;
+    name: string;
+    mimeType: string;
+    webContentLink: string;
+    permissions: drive_v3.Schema$Permission;
+  };
+};
 const auth = new google.auth.GoogleAuth({
-  scopes: SCOPES,
-  keyFile: "./pages/api/madagascar-national-parks-149b4932f02f.json",
+  scopes: [
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/drive.appdata",
+    "https://www.googleapis.com/auth/drive.metadata",
+    "https://www.googleapis.com/auth/drive.photos.readonly",
+  ],
 });
-
-// Create a new instance of the Drive API
-const drive = google.drive({ version: "v3", auth });
+const client = auth.fromJSON(credentials);
+const drive = google.drive({ version: "v3", auth: client });
 
 export class GoogleDriveService {
   static async uploadFile(file: formidable.File) {
@@ -45,25 +53,43 @@ export class GoogleDriveService {
         body: fs.createReadStream(file.filepath),
         mimeType: file.mimetype,
       },
-      fields: "id,name,mimeType",
+      fields: GOOGLE_DRIVE_OPTION.fields,
+    });
+    const permissions = await GoogleDriveService.addPermisionGlobalFile(
+      fileResponse.data.id
+    );
+    return await GoogleDriveService.getFile(fileResponse.data.id);
+  }
+  static async getListFile() {
+    const fileResponse = await drive.files.list({
+      fields: GOOGLE_DRIVE_OPTION.fields,
     });
     return fileResponse;
   }
-  static async getListFile() {
-    const fileResponse = await drive.files.list({});
-    return fileResponse;
+  static async addPermisionGlobalFile(fileId: string) {
+    const fileResponse = await drive.permissions.create({
+      fileId,
+      // fields: GOOGLE_DRIVE_OPTION.fields,
+      requestBody: {
+        role: "writer",
+        type: "anyone",
+        allowFileDiscovery: true,
+      },
+    });
+    return fileResponse.data;
   }
   static async getFile(fileId: string) {
     const fileResponse = await drive.files.get({
       fileId,
-      fields: "id,name,mimeType",
+      fields: GOOGLE_DRIVE_OPTION.fields,
+      // alt: "media",
     });
     return fileResponse;
   }
   static async deleteFile(fileId: string) {
     const fileResponse = await drive.files.delete({
       fileId,
-      fields: "id,name,mimeType",
+      fields: GOOGLE_DRIVE_OPTION.fields,
     });
     return fileResponse;
   }

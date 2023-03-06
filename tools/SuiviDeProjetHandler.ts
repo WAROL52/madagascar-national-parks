@@ -328,78 +328,90 @@ export const etapes = [
 export const tachesFormation = [
   {
     tacheName: "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
-    debutPrevionnel: new Date("06/02/2023"),
-    finPrevisionnel: new Date("06/02/2023"),
+    debutPrevionnel: new Date(2023, 1, 6), //"06/02/2023"
+    finPrevisionnel: new Date(2023, 1, 6), //"06/02/2023"
+    projetName: "formation",
     etape: 1,
   },
   {
     tacheName: "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
-    debutPrevionnel: new Date("06/03/2023"),
-    finPrevisionnel: new Date("07/03/2023"),
+    debutPrevionnel: new Date(2023, 2, 6), //"06/03/2023"
+    finPrevisionnel: new Date(2023, 2, 7), //"07/03/2023"
+    projetName: "formation",
     etape: 2,
   },
   {
     tacheName:
       "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
-    debutPrevionnel: new Date("06/04/2023"),
-    finPrevisionnel: new Date("07/04/2023"),
+    debutPrevionnel: new Date(2023, 3, 6), //"06/04/2023"
+    finPrevisionnel: new Date(2023, 3, 7), //"07/04/2023"
+    projetName: "formation",
     etape: 3,
   },
   {
     tacheName: "IMPACTS, PGES, RISQUES, MGP ",
-    debutPrevionnel: new Date("08/05/2023"),
-    finPrevisionnel: new Date("09/05/2023"),
+    debutPrevionnel: new Date(2023, 4, 8), //"08/05/2023"
+    finPrevisionnel: new Date(2023, 4, 9), //"09/05/2023"
+    projetName: "formation",
     etape: 4,
   },
   {
     tacheName: "RESTITUTION AUX COMMUNAUTES",
-    debutPrevionnel: new Date("06/06/2023"),
-    finPrevisionnel: new Date("06/06/2023"),
+    debutPrevionnel: new Date(2023, 5, 6), //"06/06/2023"
+    finPrevisionnel: new Date(2023, 5, 6), //"06/06/2023"
+    projetName: "formation",
     etape: 5,
   },
   {
     tacheName: "EVALUATION PARTICIPATIVE ",
-    debutPrevionnel: new Date("01/07/2023"),
-    finPrevisionnel: new Date("01/07/2023"),
+    debutPrevionnel: new Date(2023, 6, 1), //"01/07/2023"
+    finPrevisionnel: new Date(2023, 6, 1), //"01/07/2023"
+    projetName: "formation",
     etape: 6,
   },
 ] as const;
 export const tachesExcecution = [
   {
     tacheName: "ANALYSE TERROIR ET RESTRUCTURATION DES CLP",
-    debutPrevionnel: new Date("07/02/2023"),
-    finPrevisionnel: new Date("05/03/2023"),
+    debutPrevionnel: new Date(2023, 1, 7), //"07/02/2023"
+    finPrevisionnel: new Date(2023, 2, 5), //"05/03/2023"
+    projetName: "excecution",
     etape: 1,
   },
   {
     tacheName: "ANALYSE DES PARTIES PRENANTES et RESTRUCTURATION COSAP ",
-    debutPrevionnel: new Date("08/03/2023"),
-    finPrevisionnel: new Date("05/04/2023"),
+    debutPrevionnel: new Date(2023, 2, 8), //"08/03/2023"
+    finPrevisionnel: new Date(2023, 3, 5), //"05/04/2023"
+    projetName: "excecution",
     etape: 2,
   },
   {
     tacheName:
       "IDENTIFICATION LOCALITE CIBLE, BENEFICIAIRES, MICROPROJET, APPROCHE GENRE, INDICATEURS ",
-    debutPrevionnel: new Date("08/04/2023"),
-    finPrevisionnel: new Date("07/05/2023"),
+    debutPrevionnel: new Date(2023, 3, 8), //"08/04/2023"
+    finPrevisionnel: new Date(2023, 4, 7), //"07/05/2023"
+    projetName: "excecution",
     etape: 3,
   },
   {
     tacheName: "IMPACTS, PGES, RISQUES, MGP ",
-    debutPrevionnel: new Date("10/05/2023"),
-    finPrevisionnel: new Date("05/06/2023"),
+    debutPrevionnel: new Date(2023, 4, 10), //"10/05/2023"
+    finPrevisionnel: new Date(2023, 5, 5),
+    projetName: "excecution",
     etape: 4,
   },
   {
     tacheName: "RESTITUTION AUX COMMUNAUTES",
-    debutPrevionnel: new Date("07/06/2023"),
-    finPrevisionnel: new Date("30/06/2023"),
+    debutPrevionnel: new Date(2023, 5, 7),
+    finPrevisionnel: new Date(2023, 5, 30),
+    projetName: "excecution",
     etape: 5,
   },
   {
     tacheName: "EVALUATION PARTICIPATIVE ",
-    debutPrevionnel: new Date("02/07/2023"),
-    finPrevisionnel: new Date("03/07/2023"),
+    debutPrevionnel: new Date(2023, 6, 2),
+    finPrevisionnel: new Date(2023, 6, 3),
+    projetName: "excecution",
     etape: 6,
   },
 ] as const;

@@ -3,12 +3,13 @@ import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
 import { SuiviDeProjet } from "@/prisma/dto/suivi-de-projet/entities/suivi-de-projet.entity";
 import { SiteName } from "@prisma/client";
 import axios from "axios";
+import { GoogleDriveOptionType } from "./googleDriveService";
 import { ProjetParsedInterface } from "./SuiviDeProjetHandler";
 
 const post = async function <R>(url: string, data?: any) {
   return await axios.post<R>(url, data).then(({ data }) => data);
 };
-export const SYMBOLE_SEPARATOR = "⫻";
+export const FOLDER_SEPARATOR = "⫻";
 export class AxiosService {
   static async getSuiviDeProjet(siteName: SiteName) {
     return await post<SuiviDeProjet[]>("/api/tools-suivi/get-one", {
@@ -61,6 +62,7 @@ export class AxiosService {
       fileName: string;
       googleDriveID: string;
       type: string;
+      downloadLink: string;
     }
   ) {
     const body = { folderParent, file };
@@ -71,12 +73,12 @@ export class AxiosService {
     // const b = f.slice();
     const folderPathName = folderParent.folderPathName.replaceAll(
       "/",
-      SYMBOLE_SEPARATOR
+      FOLDER_SEPARATOR
     );
     const newFile = new File(
       [file],
       `${folderPathName}${
-        folderPathName === SYMBOLE_SEPARATOR ? "" : SYMBOLE_SEPARATOR
+        folderPathName === FOLDER_SEPARATOR ? "" : FOLDER_SEPARATOR
       }${file.name}`,
       {
         type: file.type,
@@ -84,20 +86,28 @@ export class AxiosService {
       }
     );
     formData.append("file", newFile);
-
     try {
-      const res = await axios.post("/api/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log(`File uploaded: `, res.data);
+      const res = await axios.post<GoogleDriveOptionType["fields"]>(
+        "/api/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       const folder = await AxiosService.createOneFileToFolder(folderParent, {
         fileName: file.name,
         googleDriveID: res.data.id,
         type: file.type,
+        downloadLink: res.data.webContentLink,
       });
       return folder;
     } catch (err) {
       console.error(err);
     }
+  }
+  static async downloadFile(fileSchema: FileSchema) {
+    return await post<string>("/api/download", {
+      googleDriveID: fileSchema.googleDriveID,
+    });
   }
 }

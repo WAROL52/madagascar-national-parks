@@ -1,12 +1,6 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { SiteName } from "@prisma/client";
 
-import { UpdateEmailDto } from "@/prisma/dto/email/dto/update-email.dto";
-import { Email } from "@/prisma/dto/email/entities/email.entity";
-import { PrismaClient, SiteName } from "@prisma/client";
-import { log } from "console";
-import type { NextApiRequest, NextApiResponse } from "next";
-
-const emailsResponsableSite: { email: string; siteName: SiteName }[] = [
+const emailsOfResponsableDeSite = [
   {
     email: "juliette_drABT@mnparks.mg",
     siteName: "ABT",
@@ -123,22 +117,59 @@ const emailsResponsableSite: { email: string; siteName: SiteName }[] = [
     email: "juliette_dpZVB@mnparks.mg",
     siteName: "ZVB",
   },
-];
+] as const;
+const emailsOfAdmin = [
+  {
+    email: "raberolio@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "rabetsyrolio@gmail.com",
+    siteName: "aucun",
+  },
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const prisma = new PrismaClient();
-  const email = await prisma.email.createMany({
-    data: emailsResponsableSite.map(({ email, siteName }) => {
-      return {
-        email,
-        role: "ResponsableSite",
-        siteName,
-      };
-    }),
-  });
-  return res.status(200).json(email);
-  //   res.status(200).json({ name: "John Doe" });
-}
+  {
+    email: "serge_rcog@mnparks.mg",
+    siteName: "aucun",
+  },
+  {
+    email: "kiadimihaja@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "francklinbaba04@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "rajaonarisonrojovola@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "maminiainarakotoson587@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "fanilor47@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "santatrahasimbola28@gmail.com",
+    siteName: "aucun",
+  },
+  {
+    email: "ralaisa_dop@mnparks.mg",
+    siteName: "aucun",
+  },
+];
+const emailsOfSuperAdmin = [
+  {
+    email: "onja_ccoges@mnparks.mg",
+    siteName: "tous",
+  },
+];
+export const GLOBAL_VALUE = {
+  emailsOfResponsableDeSite,
+  emailsOfAdmin,
+  emailsOfSuperAdmin,
+  devID: "WAROL52",
+} as const;

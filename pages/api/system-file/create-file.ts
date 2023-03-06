@@ -16,6 +16,7 @@ export default async function handler(
         fileName: string;
         googleDriveID: string;
         type: string;
+        downloadLink: string;
       };
     };
     let folderPathName = data.folderParent.folderPathName;
@@ -29,6 +30,7 @@ export default async function handler(
         filePathName: folderPathName + "/" + data.file.fileName,
         googleDriveID: data.file.googleDriveID,
         type: data.file.type,
+        downloadLink: data.file.downloadLink,
         folderParent: {
           connect: {
             folderPathName: data.folderParent.folderPathName,

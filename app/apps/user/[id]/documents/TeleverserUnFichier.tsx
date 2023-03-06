@@ -23,15 +23,15 @@ export default function TeleverserUnFichier({
   };
   const handlerChange = async () => {
     const files = inputFile.current.files;
-    console.log("handlerChange...");
-
     if (files.length) {
       setLoading(true);
-      console.log("sending file...", files);
       const res = await AxiosService.uploadFile(folder, files[0]);
-      console.log("res--->", res);
       setLoading(false);
-      setFolderRoot(res);
+      if(res){
+        setFolderRoot(res);
+      }else{
+        alert("echec de televersement...")
+      }
       // openFolder(folder.folderPathName);
     }
     inputFile.current.value = "";

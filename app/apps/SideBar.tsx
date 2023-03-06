@@ -1,10 +1,9 @@
-"use client";
-import { getUserCookiesClient } from "@/tools/authClient";
+import { getUserCookiesServer } from "@/tools/authServer";
 import Link from "next/link";
 import React from "react";
 
 export default function SideBar() {
-  const user = getUserCookiesClient();
+  const user = getUserCookiesServer();
   if (user?.email?.role === "ResponsableSite") return;
   return (
     <div id="layoutSidenav_nav">

@@ -28,11 +28,12 @@ export default function FileStructure({
                   type="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                ></button>
+                />
                 <ul className="dropdown-menu">
                   <div>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      {/* rome-ignore lint/a11y/useValidAnchor: <explanation> */}
+<a className="dropdown-item" href="#">
                         Action
                       </a>
                     </li>

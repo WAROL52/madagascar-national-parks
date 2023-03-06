@@ -95,6 +95,7 @@ model FileSchema {
   filePathName  String @unique
   type          String
   googleDriveID String
+  downloadLink  String
 
   folderParent Folder @relation(fields: [folderId], references: [id])
   folderId     Int

@@ -43,18 +43,21 @@ export default function FileSysteme() {
       handleClose();
     });
   };
-  useEffect(() => {
-    AxiosService.getFolderRoot().then((f) => {
-      setFolderRoot(f);
-      setOpenFolderLoading(false);
-    });
-  }, []);
+  const pathRoot =
+    user.email.role === "ResponsableSite"
+      ? `/Sites/${user?.email?.siteName}`
+      : "/";
   const openFolder: OpenFolderType = async (folderPathName: string) => {
+    if (!folderPathName.startsWith(pathRoot)) return;
     setOpenFolderLoading(true);
     const folder = await AxiosService.openFolder(folderPathName);
     setFolderRoot(folder);
     setOpenFolderLoading(false);
   };
+  useEffect(() => {
+    openFolder(pathRoot);
+  }, [pathRoot]);
+
   console.log(folderRoot);
 
   return (
@@ -99,11 +102,12 @@ export default function FileSysteme() {
             </div>
           </div>
           <div
-            className="row row-cols-3 row-cols-md-6 g-4 p-3 overflow-auto border-top"
+            className="d-flex flex-wrap justify-content-start gap-4  p-3 overflow-auto border-top"
             style={{ height: "600px" }}
           >
             {openFolderLoading && <LoadingComponent />}
             {!openFolderLoading &&
+              folderRoot &&
               folderRoot.folderChilds.map((folder, index) => (
                 <FolderComponent
                   key={index}
@@ -112,6 +116,7 @@ export default function FileSysteme() {
                 />
               ))}
             {!openFolderLoading &&
+              folderRoot &&
               folderRoot.fileChilds.map((file, index) => (
                 <FileComponent
                   key={index}

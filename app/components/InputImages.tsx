@@ -1,4 +1,5 @@
 "use client";
+import { getUserCookiesClient } from "@/tools/authClient";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
 import ImageUploading from "react-images-uploading";
@@ -18,7 +19,7 @@ export function InputImages({
 }) {
   const [images, setImages] = React.useState<ImageType[]>([]);
   const maxNumber = 69;
-
+  const user=getUserCookiesClient()
   // const onChange: ImageUploadingPropsType["onChange"] =
 
   return (
@@ -50,8 +51,8 @@ export function InputImages({
             {!imageList.length ? (
               <>
                 <img className="img-thumbnail" width="75%" src={defaultSrc} />
-                <span className="font-weight-bold">RABETSY Rolio</span>
-                <span className="text-black-50 badge">raberolio@gmail.com</span>
+                <div className="font-weight-bold">{user.nom}</div>
+                <span className="text-black-50 badge">{user.email.email}</span>
               </>
             ) : (
               ""
