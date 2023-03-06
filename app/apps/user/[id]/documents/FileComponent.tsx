@@ -29,13 +29,11 @@ export default function FileComponent({
   return (
     <div className="col ">
       <button
-        className="btn p-0 btn-fileStructure "
+        className="btn p-0 btn-fileStructure  tooltip-overlay"
         onDoubleClick={download}
-        onMouseOver={() => setShow(true)}
-        onMouseOut={() => setShow(false)}
         ref={target}
       >
-        <div className="card h-100 shadow">
+        <div className="card h-100 shadow ">
           <div className="card-header bg-warning text-end">
             <div className="justify-content-end">
               <div className="btn-group">
@@ -47,12 +45,6 @@ export default function FileComponent({
                 />
                 <ul className="dropdown-menu">
                   <div>
-                    <li>
-                      <span className="dropdown-item">Action</span>
-                    </li>
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li>
                     <li>
                       <a className="dropdown-item " onClick={download}>
                         <svg
@@ -70,6 +62,25 @@ export default function FileComponent({
                       </a>
                     </li>
                     <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <a className="dropdown-item ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={16}
+                          height={16}
+                          fill="currentColor"
+                          className="bi bi-info-circle"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                          <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                        </svg>{" "}
+                        Déscription
+                      </a>
+                    </li>
+                    <li>
                       <RenameFileStructure />
                     </li>
                     <li>
@@ -80,10 +91,14 @@ export default function FileComponent({
               </div>
             </div>
           </div>
-          <div className="card-body text-center">
+          <div className="card-body text-center tooltip-overlay">
             <IconFileComponent mymeType={fileSchema.type} />
           </div>
-          <div className="card-footer text-truncate">
+          <div
+            className="card-footer text-truncate"
+            onMouseOver={() => setShow(true)}
+            onMouseOut={() => setShow(false)}
+          >
             <small className="text-muted">
               {fileSchema.fileName.slice(0, 10)}
               {fileSchema.fileName.length > 10 ? "..." : ""}
@@ -95,6 +110,12 @@ export default function FileComponent({
         {(props) => (
           <Tooltip id="overlay-example" {...props}>
             {fileSchema.fileName}
+            <hr className="my-0" />
+            <span className="text-secondary">{fileSchema.filePathName}</span>
+            <hr className="my-0" />
+            <span className="text-secondary">{fileSchema.emailOfAuthor}</span>
+            <hr className="my-0" />
+            <span className="text-secondary">{fileSchema.description}</span>
           </Tooltip>
         )}
       </Overlay>
@@ -113,7 +134,7 @@ const IconType = {
       width={64}
       height={64}
       fill="currentColor"
-      className="bi bi-file-image-fill"
+      className="bi bi-file-image-fill tooltip-overlay"
       viewBox="0 0 16 16"
     >
       <path d="M4 0h8a2 2 0 0 1 2 2v8.293l-2.73-2.73a1 1 0 0 0-1.52.127l-1.889 2.644-1.769-1.062a1 1 0 0 0-1.222.15L2 12.292V2a2 2 0 0 1 2-2zm4.002 5.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0z" />
@@ -126,7 +147,7 @@ const IconType = {
       width={64}
       height={64}
       fill="currentColor"
-      className="bi bi-file-play-fill"
+      className="bi bi-file-play-fill tooltip-overlay"
       viewBox="0 0 16 16"
     >
       <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM6 5.883a.5.5 0 0 1 .757-.429l3.528 2.117a.5.5 0 0 1 0 .858l-3.528 2.117a.5.5 0 0 1-.757-.43V5.884z" />
@@ -138,7 +159,7 @@ const IconType = {
       width={64}
       height={64}
       fill="currentColor"
-      className="bi bi-file-earmark-font-fill"
+      className="bi bi-file-earmark-font-fill tooltip-overlay"
       viewBox="0 0 16 16"
     >
       <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM5.057 6h5.886L11 8h-.5c-.18-1.096-.356-1.192-1.694-1.235l-.298-.01v5.09c0 .47.1.582.903.655v.5H6.59v-.5c.799-.073.898-.184.898-.654V6.755l-.293.01C5.856 6.808 5.68 6.905 5.5 8H5l.057-2z" />
@@ -150,7 +171,7 @@ const IconType = {
       width={64}
       height={64}
       fill="currentColor"
-      className="bi bi-file-earmark-text-fill"
+      className="bi bi-file-earmark-text-fill tooltip-overlay"
       viewBox="0 0 16 16"
     >
       <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z" />
@@ -162,7 +183,7 @@ const IconType = {
       width={16}
       height={16}
       fill="currentColor"
-      className="bi bi-file-music-fill"
+      className="bi bi-file-music-fill tooltip-overlay"
       viewBox="0 0 16 16"
     >
       <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-.5 4.11v1.8l-2.5.5v5.09c0 .495-.301.883-.662 1.123C7.974 12.866 7.499 13 7 13c-.5 0-.974-.134-1.338-.377-.36-.24-.662-.628-.662-1.123s.301-.883.662-1.123C6.026 10.134 6.501 10 7 10c.356 0 .7.068 1 .196V4.41a1 1 0 0 1 .804-.98l1.5-.3a1 1 0 0 1 1.196.98z" />
@@ -176,7 +197,7 @@ const FileDefaultIcon = () => (
     width={64}
     height={64}
     fill="currentColor"
-    className="bi bi-file-earmark-fill"
+    className="bi bi-file-earmark-fill tooltip-overlay"
     viewBox="0 0 16 16"
   >
     <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />

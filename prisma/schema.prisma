@@ -75,7 +75,9 @@ model Folder {
   updatedAt DateTime @updatedAt
 
   folderName     String
-  folderPathName String @unique
+  folderPathName String  @unique
+  emailOfAuthor  String?
+  description    String?
 
   folderParentId Int?
   folderParent   Folder?      @relation("parentChildrens", fields: [folderParentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -91,11 +93,13 @@ model FileSchema {
   updatedAt DateTime @updatedAt
 
   fileName      String
-  fileNameSrc   String @unique
-  filePathName  String @unique
+  fileNameSrc   String  @unique
+  filePathName  String  @unique
   type          String
   googleDriveID String
   downloadLink  String
+  emailOfAuthor String?
+  description   String?
 
   folderParent Folder @relation(fields: [folderId], references: [id])
   folderId     Int
