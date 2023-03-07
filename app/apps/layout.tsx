@@ -16,6 +16,7 @@ import { redirect } from "next/navigation";
 import { getUserCookiesServer, setUserCookiesServer } from "@/tools/authServer";
 import { PrismaClient } from "@prisma/client";
 import SideBar from "./SideBar";
+import CookiesController from "./CookiesController";
 type UserType = Partial<{
   email: string;
   motdepasse: string;
@@ -33,7 +34,7 @@ export default async function layout({
   const user = getUserCookiesServer();
 
   if (!user) {
-    redirect("/login");
+    return redirect("/login");
   }
   if (user.id) {
     const prisma = new PrismaClient();
@@ -44,12 +45,14 @@ export default async function layout({
     });
     if (!USERDATA) {
       console.log("Apps.layout:redirect", USERDATA);
-      redirect("/login");
+      return redirect("/login");
     }
+    // setUserCookiesServer(USERDATA);
   }
 
   return (
     <>
+      <CookiesController />
       <div id="layoutSidenav">
         <SideBar />
 

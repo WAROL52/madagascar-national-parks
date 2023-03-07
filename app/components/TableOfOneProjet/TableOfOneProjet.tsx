@@ -235,6 +235,9 @@ export default function TableOfOneProjet({
       }
     );
   };
+  const isSuperAdmin = user?.email?.role === "SuperAdmin";
+  const isEditable = isSuperAdmin || user?.email?.role === "ResponsableSite";
+
   const columnsDef = [
     ...columnsPart1,
     {
@@ -243,7 +246,7 @@ export default function TableOfOneProjet({
       headerClassName,
       // resizable: true,
       width: 100,
-      editable: user?.email?.role === "ResponsableSite",
+      editable: isEditable,
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
       valueSetter: (params: GridValueSetterParams) => {
@@ -269,7 +272,7 @@ export default function TableOfOneProjet({
       valueParser: (value, param) => {
         const projet = param.row as ProjetParsedInterface;
         value = (value && new Date(value)) as Date | null;
-        if (!["aucun", "tous"].includes(projet.siteName)) {
+        if (!isSuperAdmin && !["aucun", "tous"].includes(projet.siteName)) {
           if (projet.debutReel) {
             return new Date(projet.debutReel);
           }
@@ -282,7 +285,7 @@ export default function TableOfOneProjet({
       headerName: "Fin Réel",
       headerClassName,
       width: 100,
-      editable: user?.email?.role === "ResponsableSite",
+      editable: isEditable,
       type: "date",
       renderCell: ({ value }) => value && new Date(value).toLocaleDateString(),
       valueSetter: (params: GridValueSetterParams) => {
@@ -312,7 +315,7 @@ export default function TableOfOneProjet({
       valueParser: (value, param) => {
         const projet = param.row as ProjetParsedInterface;
 
-        if (!["aucun", "tous"].includes(projet.siteName)) {
+        if (!isSuperAdmin && !["aucun", "tous"].includes(projet.siteName)) {
           if (projet.finReel) {
             return new Date(projet.finReel);
           }

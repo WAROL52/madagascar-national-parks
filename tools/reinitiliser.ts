@@ -1,7 +1,7 @@
 import { Folder } from "@/prisma/dto/folder/entities/folder.entity";
 import { PrismaClient, SiteName } from "@prisma/client";
 import { GLOBAL_VALUE } from "./configGlobal";
-import { prismaInstance } from "./prismaService";
+import { prismaClient } from "./prismaService";
 import { tachesFormation, tachesExcecution } from "./SuiviDeProjetHandler";
 
 export async function initDataBaseExemple() {
@@ -15,7 +15,7 @@ export async function initDataBaseExemple() {
 
 export async function initDataBaseResponsableDeSite() {
   let deleteResult = null;
-  const initResult = await prismaInstance.email.createMany({
+  const initResult = await prismaClient.email.createMany({
     data: GLOBAL_VALUE.emailsOfResponsableDeSite.map(({ email, siteName }) => {
       return {
         email,
@@ -27,7 +27,7 @@ export async function initDataBaseResponsableDeSite() {
   });
   return {
     deleteResult,
-    initResult: await prismaInstance.email.findMany({
+    initResult: await prismaClient.email.findMany({
       where: {
         role: "ResponsableSite",
       },
@@ -36,7 +36,7 @@ export async function initDataBaseResponsableDeSite() {
 }
 export async function initDataBaseSuperAdmin() {
   let deleteResult = null;
-  const initResult = await prismaInstance.email.createMany({
+  const initResult = await prismaClient.email.createMany({
     data: GLOBAL_VALUE.emailsOfSuperAdmin.map(({ email, siteName }) => {
       return {
         email,
@@ -47,7 +47,7 @@ export async function initDataBaseSuperAdmin() {
   });
   return {
     deleteResult,
-    initResult: await prismaInstance.email.findMany({
+    initResult: await prismaClient.email.findMany({
       where: {
         role: "SuperAdmin",
       },
@@ -56,7 +56,7 @@ export async function initDataBaseSuperAdmin() {
 }
 export async function initDataBaseAdmin() {
   let deleteResult = null;
-  const initResult = await prismaInstance.email.createMany({
+  const initResult = await prismaClient.email.createMany({
     data: GLOBAL_VALUE.emailsOfAdmin.map(({ email, siteName }) => {
       return {
         email,
@@ -68,7 +68,7 @@ export async function initDataBaseAdmin() {
   });
   return {
     deleteResult,
-    initResult: await prismaInstance.email.findMany({
+    initResult: await prismaClient.email.findMany({
       where: {
         role: "Admin",
       },
@@ -100,14 +100,14 @@ export async function initDataBaseSuiviDeProjet() {
   }
   return {
     deleteResult,
-    initResult: await prismaInstance.suiviDeProjet.findMany(),
+    initResult: await prismaClient.suiviDeProjet.findMany(),
   };
 }
 export async function initDataBaseDocuments() {
   const siteName = Object.keys(SiteName);
   const deleteAllFolder = async () => {
     const deleteFolderFilds = async () => {
-      const result = await prismaInstance.folder.findMany({
+      const result = await prismaClient.folder.findMany({
         include: {
           folderChilds: true,
         },
@@ -116,7 +116,7 @@ export async function initDataBaseDocuments() {
         const folders = result.filter((f) => !f.folderChilds.length);
         for (let index = 0; index < folders.length; index++) {
           const element = folders[index];
-          await prismaInstance.folder.delete({ where: { id: element.id } });
+          await prismaClient.folder.delete({ where: { id: element.id } });
         }
         return deleteFolderFilds();
       }
@@ -124,7 +124,7 @@ export async function initDataBaseDocuments() {
     return await deleteFolderFilds();
   };
   await deleteAllFolder();
-  const suivi = (await prismaInstance.folder.create({
+  const suivi = (await prismaClient.folder.create({
     data: {
       folderName: "ROOT",
       folderPathName: "/",
@@ -150,8 +150,8 @@ export async function initDataBaseDocuments() {
   const folderOfSites = suivi.folderChilds.find(
     (folder) => folder.folderName === "Sites"
   );
-  if (!folderOfSites) return await prismaInstance.folder.findMany();
-  const siteNameFolder = await prismaInstance.folder.createMany({
+  if (!folderOfSites) return await prismaClient.folder.findMany();
+  const siteNameFolder = await prismaClient.folder.createMany({
     data: siteName
       .filter((name) => !name.includes("_"))
       .map((name) => ({
@@ -160,5 +160,5 @@ export async function initDataBaseDocuments() {
         folderParentId: folderOfSites.id,
       })),
   });
-  return await prismaInstance.folder.findMany();
+  return await prismaClient.folder.findMany();
 }
